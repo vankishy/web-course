@@ -1,4 +1,11 @@
 services:
+    # node: # <-- TAMBAHKAN LAYANAN INI
+    #     image: 'node:20-alpine' # Versi Node yang stabil dan ringan
+    #     container_name: web-course-node # Opsional, untuk penamaan
+    #     volumes:
+    #         - .:/var/www/html:delegated
+    #     working_dir: /var/www/html
+    #     tty: true
     laravel.test:
         build:
             context: ./vendor/laravel/sail/runtimes/8.4
