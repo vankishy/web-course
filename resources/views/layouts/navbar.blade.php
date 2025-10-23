@@ -4,11 +4,11 @@
             <i class="fas fa-graduation-cap me-2"></i>
             WebCourse
         </a>
-        
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
@@ -27,7 +27,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#leaderboard">
+                    <a class="nav-link" href="/leaderboard">
                         <i class="fas fa-trophy me-1"></i>Leaderboard
                     </a>
                 </li>
