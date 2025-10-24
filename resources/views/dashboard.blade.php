@@ -236,7 +236,7 @@
                             <a href="#watchlater" class="btn btn-outline-warning btn-sm text-start">
                                 <i class="fas fa-clock me-2"></i>Watch Later
                             </a>
-                            <a href="#leaderboard" class="btn btn-outline-info btn-sm text-start">
+                            <a href="/leaderboard" class="btn btn-outline-info btn-sm text-start">
                                 <i class="fas fa-trophy me-2"></i>Leaderboard
                             </a>
                         </div>
