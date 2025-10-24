@@ -13,4 +13,9 @@ class Course extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function subcourse()
+    {
+        return $this->hasMany(SubCourse::class, "course_id", "course_id");
+    }
 }

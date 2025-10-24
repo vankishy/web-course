@@ -105,20 +105,26 @@
                         <h3 class="card-title mb-0">
                             <i class="fas fa-star text-warning me-2"></i>Featured Courses
                         </h3>
-                        <a href="#courses" class="btn btn-sm btn-outline-primary">View All Courses</a>
+                        <a href="{{route('course.index')}}" class="btn btn-sm btn-outline-primary">View All Courses</a>
                     </div>
                     <div class="card-body">
                         <div class="row g-4">
                             @foreach($featuredCourses as $course)
-                            <div class="col-md-6">
-                                <div class="card card-hover h-100">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-start mb-3">
-                                            <div class="flex-shrink-0">
-                                                <div class="bg-primary rounded p-2 text-white">
-                                                    <i class="fas fa-book"></i>
+                                <div class="col-md-6">
+                                    <div class="card card-hover h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-start mb-3">
+                                                <div class="flex-shrink-0">
+                                                    <div class="bg-primary rounded p-2 text-white">
+                                                        <i class="fas fa-book"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h5 class="card-title mb-1">{{ $course->name }}</h5>
+                                                    <p class="card-text text-muted small">{{ $course->description }}</p>
                                                 </div>
                                             </div>
+<<<<<<< HEAD
                                             <div class="flex-grow-1 ms-3">
                                                 <h5 class="card-title mb-1">{{ $course->name }}</h5>
                                                 <p class="card-text text-muted small">{{ $course->description }}</p>
@@ -134,17 +140,29 @@
                                             @endforeach
                                         </div>
                                         @endif
+=======
+>>>>>>> ddb3411 (finishing course)
 
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <span class="badge bg-primary">{{ $course->level }}</span>
-                                                <span class="badge bg-secondary">{{ $course->duration }}</span>
+                                            <!-- Roadmap Tags -->
+                                            @if(isset($course->roadmaps) && count($course->roadmaps) > 0)
+                                                <div class="mb-3">
+                                                    <small class="text-muted">Part of: </small>
+                                                    @foreach($course->roadmaps as $roadmap)
+                                                        <span class="badge bg-light text-dark border me-1">{{ $roadmap->name }}</span>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="badge bg-primary">{{ $course->level }}</span>
+                                                    <span class="badge bg-secondary">{{ $course->duration }}</span>
+                                                </div>
+                                                <a href="#" class="btn btn-sm btn-outline-primary">View Course</a>
                                             </div>
-                                            <a href="#" class="btn btn-sm btn-outline-primary">View Course</a>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             @endforeach
                         </div>
                     </div>
@@ -161,30 +179,30 @@
                     <div class="card-body">
                         <div class="row g-4">
                             @foreach($popularRoadmaps as $roadmap)
-                            <div class="col-md-4">
-                                <div class="card card-hover h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $roadmap->name }}</h5>
-                                        <p class="card-text">
-                                            <small class="text-muted">
-                                                {{ $roadmap->course_count }} courses • {{ $roadmap->duration }}
-                                            </small>
-                                        </p>
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <small class="text-muted">
-                                                <i class="fas fa-users me-1"></i>
-                                                {{ $roadmap->enrollments_count }} students
-                                            </small>
+                                <div class="col-md-4">
+                                    <div class="card card-hover h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $roadmap->name }}</h5>
+                                            <p class="card-text">
+                                                <small class="text-muted">
+                                                    {{ $roadmap->course_count }} courses • {{ $roadmap->duration }}
+                                                </small>
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-users me-1"></i>
+                                                    {{ $roadmap->enrollments_count }} students
+                                                </small>
+                                            </div>
+                                            <div class="progress mb-3" style="height: 6px;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                                            </div>
+                                            <button class="btn btn-success btn-sm w-100">
+                                                <i class="fas fa-play me-1"></i>Start Path
+                                            </button>
                                         </div>
-                                        <div class="progress mb-3" style="height: 6px;">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
-                                        </div>
-                                        <button class="btn btn-success btn-sm w-100">
-                                            <i class="fas fa-play me-1"></i>Start Path
-                                        </button>
                                     </div>
                                 </div>
-                            </div>
                             @endforeach
                         </div>
                     </div>
@@ -203,16 +221,16 @@
                     <div class="card-body">
                         <div class="list-group list-group-flush">
                             @foreach($recentActivity as $activity)
-                            <div class="list-group-item px-0 border-0">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">{{ $activity->course_name }}</h6>
-                                    <small class="text-muted">{{ $activity->time }}</small>
+                                <div class="list-group-item px-0 border-0">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ $activity->course_name }}</h6>
+                                        <small class="text-muted">{{ $activity->time }}</small>
+                                    </div>
+                                    <p class="mb-1 text-muted">
+                                        <i class="fas fa-circle text-success me-1 small"></i>
+                                        {{ $activity->action }}
+                                    </p>
                                 </div>
-                                <p class="mb-1 text-muted">
-                                    <i class="fas fa-circle text-success me-1 small"></i>
-                                    {{ $activity->action }}
-                                </p>
-                            </div>
                             @endforeach
                         </div>
                     </div>
