@@ -1,12 +1,17 @@
 <?php
 
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Group;
 
-Route::prefix('course')->group(function () {
-    Route::get('/');
+Route::prefix('course')->name('course.')->group(function () {
+    Route::get('/', [CourseController::class, 'index'])->name('index');
+    Route::get('/subcourse/{id}', [CourseController::class, 'subcourse'])->name('subcourse');
+    Route::get('/subcourse/details/{id}', [CourseController::class, 'details'])->name('details');
+    Route::post('/markdone/{id}', [CourseController::class, 'markdone'])->name('markdone');
 });
+Route::post('/createuser', [CourseController::class, 'createuser']);
 
 // Main dashboard routes
 Route::get('/', [DashboardController::class, 'index']);

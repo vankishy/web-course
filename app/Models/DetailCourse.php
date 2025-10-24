@@ -11,7 +11,14 @@ class DetailCourse extends Model
     protected $table = 'detail_course';
     protected $primaryKey = 'detail_course_id';
     protected $fillable = [
+        'name',
         'type',
-        'path'
+        'path',
+        'subcourse_id',
     ];
+
+    public function subcourse()
+    {
+        return $this->belongsTo(SubCourse::class, 'subcourse_id', 'subcourse_id');
+    }
 }

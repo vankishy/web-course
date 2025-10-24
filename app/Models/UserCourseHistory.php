@@ -11,6 +11,8 @@ class UserCourseHistory extends Model
     protected $table = 'user_course_history';
     protected $primaryKey = 'user_course_history_id';
     protected $fillable = [
-
+        'last_seen',
+        'user_id',
+        'detail_course_id',
     ];
 }

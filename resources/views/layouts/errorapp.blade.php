@@ -30,7 +30,7 @@
 </head>
 
 <body>
-    @include('layouts.navbar')
+    @include('layouts.errornavbar')
 
     <main>
         @yield('content')
