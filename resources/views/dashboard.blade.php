@@ -156,7 +156,7 @@
                         <h3 class="card-title mb-0">
                             <i class="fas fa-road text-success me-2"></i>Learning Paths
                         </h3>
-                        <a href="#roadmaps" class="btn btn-sm btn-outline-success">View All Paths</a>
+                        <a href="roadmap" class="btn btn-sm btn-outline-success">View All Paths</a>
                     </div>
                     <div class="card-body">
                         <div class="row g-4">
