@@ -11,7 +11,17 @@ class Roadmap extends Model
 
     protected $table = 'roadmap';
     protected $primaryKey = 'roadmap_id';
-    protected $fillable = [
-        'name'
-    ];
+    protected $fillable = ['name'];
+
+    // 🔹 Relasi ke UserRoadmap (banyak user bisa ikut 1 roadmap)
+    public function userRoadmaps()
+    {
+        return $this->hasMany(UserRoadmap::class, 'roadmap_id', 'roadmap_id');
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id', 'course_id');
+    }
+
 }

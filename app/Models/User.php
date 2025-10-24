@@ -42,5 +42,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+        return $this->hasMany(UserRoadmap::class, 'user_id', 'user_id');
+    }
+
+    public function roadmaps()
+    {
+        return $this->belongsToMany(
+            Roadmap::class,
+            'user_roadmap',
+            'user_id',
+            'roadmap_id'
+        );
     }
 }

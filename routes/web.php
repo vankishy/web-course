@@ -3,6 +3,7 @@
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\RoadmapController;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -18,3 +19,4 @@ Route::post('/createuser', [CourseController::class, 'createuser']);
 Route::get('/', [DashboardController::class, 'index']);
 Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/leaderboard', [LeaderboardController::class, 'index']);
+Route::get('/roadmap', [RoadmapController::class, 'index'])->name('roadmap.index');
