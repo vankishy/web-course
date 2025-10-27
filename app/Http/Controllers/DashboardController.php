@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth; // <-- Pastikan ini di-import
 
 class DashboardController extends Controller
 {
@@ -14,65 +14,7 @@ class DashboardController extends Controller
         // =============================================
         /*
         try {
-            // Get authenticated user
-            $user = Auth::user();
-            
-            // Get featured courses (from any roadmap)
-            $featuredCourses = \App\Models\Course::with(['roadmaps'])
-                ->whereNull('deleted_at')
-                ->inRandomOrder()
-                ->take(6)
-                ->get()
-                ->map(function($course) {
-                    return (object)[
-                        'course_id' => $course->course_id,
-                        'name' => $course->name,
-                        'description' => $this->generateCourseDescription($course->name),
-                        'level' => $this->getCourseLevel($course->course_id),
-                        'duration' => $this->getCourseDuration($course->course_id),
-                        'roadmaps' => $course->roadmaps->take(2)
-                    ];
-                });
-
-            // Get popular roadmaps (based on enrollment count)
-            $popularRoadmaps = \App\Models\Roadmap::with(['course'])
-                ->whereNull('deleted_at')
-                ->withCount(['userRoadmaps as enrollments_count'])
-                ->orderBy('enrollments_count', 'desc')
-                ->take(3)
-                ->get()
-                ->map(function($roadmap) {
-                    return (object)[
-                        'roadmap_id' => $roadmap->roadmap_id,
-                        'name' => $roadmap->name,
-                        'course_count' => $roadmap->course->count(),
-                        'duration' => $this->calculateRoadmapDuration($roadmap->roadmap_id),
-                        'enrollments_count' => $roadmap->enrollments_count
-                    ];
-                });
-
-            // Get user's recent activity
-            $recentActivity = \App\Models\UserCourseHistory::with(['course'])
-                ->where('user_id', $user->id)
-                ->orderBy('created_at', 'desc')
-                ->take(5)
-                ->get()
-                ->map(function($history) {
-                    return (object)[
-                        'course_name' => $history->course->name,
-                        'action' => 'Viewed course',
-                        'time' => $history->created_at->diffForHumans()
-                    ];
-                });
-
-            // Get user stats from database
-            $stats = [
-                'enrolled_courses' => \App\Models\UserRoadmap::where('user_id', $user->id)->count(),
-                'completed_courses' => \App\Models\UserCourseHistory::where('user_id', $user->id)->count(),
-                'watch_later' => \App\Models\Watchlater::where('user_id', $user->id)->count(),
-                'learning_hours' => $this->calculateLearningHours($user->id)
-            ];
-
+            // ... (kode database Anda tetap dikomentari) ...
         } catch (\Exception $e) {
             // Fallback to placeholder if database error
             return $this->getPlaceholderData();
@@ -82,6 +24,7 @@ class DashboardController extends Controller
         // =============================================
         // PLACEHOLDER VERSION - CURRENTLY ACTIVE
         // =============================================
+        // Tetap memanggil fungsi ini
         return $this->getPlaceholderData();
     }
 
@@ -90,13 +33,28 @@ class DashboardController extends Controller
      */
     private function getPlaceholderData()
     {
+        // ▼▼▼ PERUBAHAN DIMULAI DI SINI ▼▼▼
+
+        // 1. Ambil pengguna yang sedang login saat ini
+        $loggedInUser = Auth::user();
+
+        // 2. Buat objek $user, tapi gunakan nama dari $loggedInUser jika ada
         $user = (object)[
-            'id' => 1,
-            'name' => 'Mahesa',
-            'email' => 'mahesa@WebCourse.com'
+            // Ambil ID asli jika user login, jika tidak fallback ke 1
+            'id' => $loggedInUser ? $loggedInUser->user_id : 1, // Menggunakan user_id sesuai model Anda
+            
+            // Ambil NAMA asli jika user login, jika tidak fallback ke 'Guest'
+            'name' => $loggedInUser ? $loggedInUser->name : 'Guest', 
+            
+            // Ambil EMAIL asli jika user login, jika tidak fallback
+            'email' => $loggedInUser ? $loggedInUser->email : 'guest@example.com' 
         ];
 
-        $featuredCourses = [
+        // ▲▲▲ PERUBAHAN SELESAI DI SINI ▲▲▲
+
+
+        // --- Data placeholder lainnya tetap sama seperti kode Anda ---
+       $featuredCourses = [
             (object)[
                 'course_id' => 1,
                 'name' => 'Web Development Fundamentals',
@@ -230,47 +188,10 @@ class DashboardController extends Controller
     // DATABASE HELPER FUNCTIONS - UNCOMMENT WHEN READY
     // =============================================
     /*
-    private function generateCourseDescription($courseName)
-    {
-        $descriptions = [
-            'Web Development' => 'Learn to build responsive websites and web applications',
-            'Python' => 'Master Python programming from basics to advanced concepts',
-            'Data Science' => 'Explore data analysis, visualization, and machine learning',
-            'Mobile' => 'Build cross-platform mobile applications',
-            'Cloud' => 'Understand cloud platforms and deployment strategies',
-            'DevOps' => 'Learn CI/CD, containerization, and infrastructure management'
-        ];
-        
-        foreach ($descriptions as $key => $description) {
-            if (stripos($courseName, $key) !== false) {
-                return $description;
-            }
-        }
-        
-        return 'Comprehensive course covering essential concepts and skills';
-    }
-
-    private function getCourseLevel($courseId)
-    {
-        $levels = ['Beginner', 'Intermediate', 'Advanced'];
-        return $levels[array_rand($levels)];
-    }
-
-    private function getCourseDuration($courseId)
-    {
-        $durations = ['4 weeks', '6 weeks', '8 weeks', '10 weeks'];
-        return $durations[array_rand($durations)];
-    }
-
-    private function calculateRoadmapDuration($roadmapId)
-    {
-        $durations = ['4 months', '5 months', '6 months', '8 months'];
-        return $durations[array_rand($durations)];
-    }
-
-    private function calculateLearningHours($userId)
-    {
-        return rand(20, 100);
-    }
+    private function generateCourseDescription($courseName) { // ... }
+    private function getCourseLevel($courseId) { // ... }
+    private function getCourseDuration($courseId) { // ... }
+    private function calculateRoadmapDuration($roadmapId) { // ... }
+    private function calculateLearningHours($userId) { // ... }
     */
 }

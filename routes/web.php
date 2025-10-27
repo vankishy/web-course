@@ -4,19 +4,65 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\RoadmapController;
+use App\Http\Controllers\AuthControllers; // Pastikan nama controller ini sesuai
 use Illuminate\Support\Facades\Route;
-use PHPUnit\Framework\Attributes\Group;
 
-Route::prefix('course')->name('course.')->group(function () {
-    Route::get('/', [CourseController::class, 'index'])->name('index');
-    Route::get('/subcourse/{id}', [CourseController::class, 'subcourse'])->name('subcourse');
-    Route::get('/subcourse/details/{id}', [CourseController::class, 'details'])->name('details');
-    Route::post('/markdone/{id}', [CourseController::class, 'markdone'])->name('markdone');
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// == LANDING PAGE (HALAMAN AWAL UNTUK SEMUA PENGUNJUNG) ==
+// Rute ini sekarang menjadi rute utama untuk '/'
+Route::get('/', function () {
+    return view('landingpage');
+})->name('landing'); // Tetap beri nama 'landing'
+
+
+// == RUTE UNTUK TAMU (GUEST) ==
+// Hanya bisa diakses jika BELUM login.
+// Jika sudah login, akan diarahkan ke rute bernama 'dashboard' (yaitu /dashboard)
+Route::middleware('guest')->group(function () {
+    
+    // Halaman Sign Up
+    Route::get('/signup', [AuthControllers::class, 'registerPage'])->name('signup');
+    // Proses Sign Up
+    Route::post('/register', [AuthControllers::class, 'register'])->name('register.process');
+
+    // Halaman Sign In
+    Route::get('/signin', [AuthControllers::class, 'loginPage'])->name('signin');
+    // Proses Sign In
+    Route::post('/login', [AuthControllers::class, 'login'])->name('login.process');
 });
-Route::post('/createuser', [CourseController::class, 'createuser']);
 
-// Main dashboard routes
-Route::get('/', [DashboardController::class, 'index']);
-Route::get('/dashboard', [DashboardController::class, 'index']);
-Route::get('/leaderboard', [LeaderboardController::class, 'index']);
-Route::get('/roadmap', [RoadmapController::class, 'index'])->name('roadmap.index');
+
+// == RUTE UNTUK PENGGUNA YANG SUDAH LOGIN ==
+// Hanya bisa diakses jika SUDAH login.
+// Jika belum login, akan diarahkan ke rute bernama 'signin' (yaitu /signin)
+Route::middleware('auth')->group(function () {
+
+    // Halaman Dashboard Utama SEKARANG PINDAH ke '/dashboard'
+    // Nama 'dashboard' tetap digunakan agar redirect setelah login berfungsi
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Halaman Leaderboard
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
+
+    // Halaman Roadmap
+    Route::get('/roadmap', [RoadmapController::class, 'index'])->name('roadmap.index');
+
+    // Grup Rute Course
+    Route::prefix('course')->name('course.')->group(function () {
+        Route::get('/', [CourseController::class, 'index'])->name('index');
+        Route::get('/subcourse/{id}', [CourseController::class, 'subcourse'])->name('subcourse');
+        Route::get('/subcourse/details/{id}', [CourseController::class, 'details'])->name('details');
+        Route::post('/markdone/{id}', [CourseController::class, 'markdone'])->name('markdone');
+    });
+
+    // Rute '/createuser' Anda, sekarang juga aman
+    Route::post('/createuser', [CourseController::class, 'createuser']); // Pertimbangkan memberi nama rute ini
+
+    // Proses Logout
+    Route::post('/logout', [AuthControllers::class, 'logout'])->name('logout');
+});

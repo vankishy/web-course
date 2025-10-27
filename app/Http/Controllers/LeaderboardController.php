@@ -81,11 +81,20 @@ class LeaderboardController extends Controller
      */
     private function getPlaceholderData()
     {
+        $loggedInUser = Auth::user();
+
+        // 2. Buat objek $user, tapi gunakan data dari $loggedInUser jika ada
         $user = (object)[
-            'user_id' => 1,
-            'name' => 'Mahesa',
-            'email' => 'mahesa@WebCourse.com'
+            // Ambil ID asli jika user login, jika tidak fallback ke 1
+            'user_id' => $loggedInUser ? $loggedInUser->user_id : 1, // Menggunakan user_id sesuai model Anda
+            
+            // Ambil NAMA asli jika user login, jika tidak fallback ke 'Guest'
+            'name' => $loggedInUser ? $loggedInUser->name : 'Guest', 
+            
+            // Ambil EMAIL asli jika user login, jika tidak fallback
+            'email' => $loggedInUser ? $loggedInUser->email : 'guest@example.com' 
         ];
+
 
         $leaderboard = [
             (object)[
@@ -136,7 +145,7 @@ class LeaderboardController extends Controller
             (object)[
                 'rank' => 6,
                 'user_id' => 1,
-                'name' => 'Mahesa',
+                'name' => $loggedInUser ? $loggedInUser->name : 'Guest',
                 'points' => 2050,
                 'completed_courses' => 10,
                 'badges' => ['Quick Start'],
