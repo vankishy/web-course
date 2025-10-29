@@ -8,13 +8,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+// Pastikan Anda meng-import model-model ini untuk relasi
+use App\Models\Roadmap;
+use App\Models\UserRoadmap;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, SoftDeletes;
 
+    /**
+     * Memberi tahu Laravel nama tabel & primary key kustom Anda.
+     * Ini adalah perbaikan untuk masalah login Anda.
+     */
     protected $table = 'user';
     protected $primaryKey = 'user_id';
+
+    /**
+     * The attributes that should be mass-assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
@@ -38,13 +52,25 @@ class User extends Authenticatable
      */
     protected function casts(): array
     {
+        // Kode return $this->hasMany(...) yang salah telah dihapus dari sini.
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * INI ADALAH FUNGSI BARU UNTUK RELASI
+     * Berisi kode yang sebelumnya salah tempat di dalam fungsi casts().
+     */
+    public function userRoadmaps()
+    {
         return $this->hasMany(UserRoadmap::class, 'user_id', 'user_id');
     }
 
+    /**
+     * Ini adalah relasi roadmaps Anda yang sudah ada (sudah benar).
+     */
     public function roadmaps()
     {
         return $this->belongsToMany(
