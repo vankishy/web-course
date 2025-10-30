@@ -19,9 +19,15 @@ class Roadmap extends Model
         return $this->hasMany(UserRoadmap::class, 'roadmap_id', 'roadmap_id');
     }
 
-    public function course()
+    public function courses()
     {
-        return $this->belongsTo(Course::class, 'course_id', 'course_id');
+        // Mendefinisikan relasi Many-to-Many ke Course melalui tabel 'roadmap_course'
+        return $this->belongsToMany(
+            Course::class, 
+            'roadmap_course', 
+            'roadmap_id',  // FK Model saat ini di tabel pivot
+            'course_id',   // FK Model yang dihubungkan di tabel pivot
+        );
     }
 
 }
