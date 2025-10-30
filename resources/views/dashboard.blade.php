@@ -230,7 +230,7 @@
                             <a href="#courses" class="btn btn-outline-primary btn-sm text-start">
                                 <i class="fas fa-search me-2"></i>Browse Courses
                             </a>
-                            <a href="#roadmaps" class="btn btn-outline-success btn-sm text-start">
+                            <a href="roadmap" class="btn btn-outline-success btn-sm text-start">
                                 <i class="fas fa-road me-2"></i>View Roadmaps
                             </a>
                             <a href="#watchlater" class="btn btn-outline-warning btn-sm text-start">

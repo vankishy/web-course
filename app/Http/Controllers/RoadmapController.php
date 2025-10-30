@@ -12,22 +12,34 @@ class RoadmapController extends Controller
     public function index()
     {
         // Pastikan user login sebelum akses
-        // $user = auth()->user(); Buka kalau sudah bisa terhubung via database
-        $user_id = 1;
+        $user = auth()->user();
+        // $user_id = 1;
 
-        /*if (!$user) {
+        if (!$user) {
             return redirect('/')->with('error', 'You must be logged in to view your roadmaps.');
-        }*/
+        }
 
-        // Ambil roadmap milik user yang sedang login + relasi course
-        // $roadmaps = $user->roadmaps()->with('course')->get(); Buka kalau sudah bisa terhubung via database
+        $followedRoadmapIds = $user->roadmaps()
+                               ->select('roadmap.roadmap_id') // Tentukan kolom mana yang harus diambil
+                               ->pluck('roadmap_id');
 
-        $roadmapIds = \App\Models\UserRoadmap::where('user_id', $user_id)
-                    ->pluck('roadmap_id');
+        // Ini secara otomatis mengambil semua roadmap yang terhubung dengan user melalui tabel 'user_roadmap'.
+        $roadmaps = $user->roadmaps()->get();
 
-        $roadmaps = \App\Models\Roadmap::whereIn('roadmap_id', $roadmapIds)->get();
+        // 3. Ambil Roadmap Rekomendasi (Semua Roadmap yang ID-nya TIDAK ada di followedRoadmapIds)
+        $recommendedRoadmaps = Roadmap::whereNotIn('roadmap_id', $followedRoadmapIds)
+                                    ->get();
 
-        // return view('roadmap.main', compact('roadmaps')); Buka kalau sudah bisa terhubung via database
-        return view('roadmap.main', compact('roadmaps'));
+        return view('roadmap.main', compact('roadmaps', 'recommendedRoadmaps'));
+    }
+
+    public function show($slug)
+    {
+        // Menggunakan relasi 'courses' yang baru didefinisikan di Model Roadmap
+        $roadmap = Roadmap::where('slug', $slug)
+                            ->with('courses') // Eager load semua kursus
+                            ->firstOrFail(); 
+
+        return view('roadmap.detail', compact('roadmap'));
     }
 }

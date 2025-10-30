@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
 
     // Halaman Roadmap
     Route::get('/roadmap', [RoadmapController::class, 'index'])->name('roadmap.index');
+    Route::get('/roadmap/{slug}', [RoadmapController::class, 'show'])->name('roadmap.show');
 
     // Grup Rute Course
     Route::prefix('course')->name('course.')->group(function () {

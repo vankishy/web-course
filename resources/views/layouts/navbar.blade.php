@@ -22,7 +22,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#roadmaps">
+                    <a class="nav-link" href="roadmap">
                         <i class="fas fa-road me-1"></i>Roadmaps
                     </a>
                 </li>
@@ -39,10 +39,11 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
+                @auth
                 {{-- PLACEHOLDER VERSION - CURRENTLY ACTIVE --}}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user me-1"></i> {{ $user->name ?? 'Guest' }}
+                        <i class="fas fa-user me-1"></i> {{ auth()->user()->name }}
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
@@ -58,6 +59,14 @@
                         </li>
                     </ul>
                 </li>
+                @else
+                {{-- Tampilkan link Sign In jika belum login --}}
+                <li class="nav-item">
+                    <a class="btn btn-outline-success" href="{{ route('signin') }}">
+                        <i class="fas fa-sign-in-alt me-1"></i>Sign In
+                    </a>
+                </li>
+                @endauth
             </ul>
         </div>
     </div>
