@@ -124,24 +124,6 @@
                                                     <p class="card-text text-muted small">{{ $course->description }}</p>
                                                 </div>
                                             </div>
-<<<<<<< HEAD
-                                            <div class="flex-grow-1 ms-3">
-                                                <h5 class="card-title mb-1">{{ $course->name }}</h5>
-                                                <p class="card-text text-muted small">{{ $course->description }}</p>
-                                            </div>
-                                        </div>
-
-                                        <!-- Roadmap Tags -->
-                                        @if(isset($course->roadmaps) && count($course->roadmaps) > 0)
-                                        <div class="mb-3">
-                                            <small class="text-muted">Part of: </small>
-                                            @foreach($course->roadmaps as $roadmap)
-                                                <span class="badge bg-light text-dark border me-1">{{ $roadmap->name }}</span>
-                                            @endforeach
-                                        </div>
-                                        @endif
-=======
->>>>>>> ddb3411 (finishing course)
 
                                             <!-- Roadmap Tags -->
                                             @if(isset($course->roadmaps) && count($course->roadmaps) > 0)
