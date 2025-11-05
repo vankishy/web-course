@@ -15,41 +15,48 @@ jobs:
       contents: read
       
     steps:
-      - name: 1. Checkout Code
-        # Mengambil kode dari repositori
-        uses: actions/checkout@v4
+      permissions:
+  contents: read
+  
+steps:
+  - name: 1. Checkout Code
+    # Mengambil kode dari repositori
+    uses: actions/checkout@v4
 
-      - name: 2. Setup PHP Environment
-        # Menginstal PHP versi 8.3 dan ekstensi yang dibutuhkan
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3' # Sesuaikan dengan versi Docker Anda
-          extensions: pdo_mysql, mbstring, dom, fileinfo, bcmath, exif
-          coverage: none
-          tools: composer
+  - name: 2. Setup PHP Environment
+    # Menginstal PHP versi 8.3 dan ekstensi yang dibutuhkan
+    uses: shivammathur/setup-php@v2
+    with:
+      php-version: '8.3' # Sesuaikan dengan versi Docker Anda
+      extensions: pdo_mysql, mbstring, dom, fileinfo, bcmath, exif
+      coverage: none
+      tools: composer
 
-      # - name: 3. Install Node (Untuk npm/Vite)
-      #   # Instalasi Node.js (digunakan untuk mengkompilasi aset frontend)
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: '20' # Versi Node.js LTS
+  # -- PERBAIKAN URUTAN KRITIS --
 
-      - name: 4. Copy .env & Generate Key
-        # Membuat file .env untuk lingkungan CI
-        run: |
-          cp .env.example .env
-          php artisan key:generate
+  - name: 3. Install PHP Dependencies (Composer)
+    # Langkah ini HARUS dijalankan pertama kali untuk membuat vendor/autoload.php
+    run: composer install --prefer-dist --no-interaction --no-progress
 
-      - name: 5. Install PHP Dependencies (Composer)
-        run: composer install --prefer-dist --no-interaction --no-progress
+  # - name: 4. Install Node (Untuk npm/Vite)
+  #   # Instalasi Node.js (digunakan untuk mengkompilasi aset frontend)
+  #   uses: actions/setup-node@v4
+  #   with:
+  #     node-version: '20' # Versi Node.js LTS
 
-      # - name: 6. Install Frontend Dependencies (NPM)
-      #   run: npm install
+  - name: 5. Copy .env & Generate Key
+    # Sekarang aman menjalankan php artisan karena autoloader sudah ada
+    run: |
+      cp .env.example .env
+      php artisan key:generate
 
-      - name: 7. Run Database Migrations
-        # Menggunakan database SQLite in-memory untuk tes, jadi tidak perlu MySQL container
-        run: php artisan migrate --force --env=testing
+  # - name: 6. Install Frontend Dependencies (NPM)
+  #   run: npm install
 
-      - name: 8. Run PHPUnit Tests
-        # Menjalankan semua test unit dan feature Laravel
-        run: php artisan test
+  - name: 7. Run Database Migrations
+    # Menggunakan database SQLite in-memory untuk tes
+    run: php artisan migrate --force --env=testing
+
+  - name: 8. Run PHPUnit Tests
+    # Menjalankan semua test unit dan feature Laravel
+    run: php artisan test
