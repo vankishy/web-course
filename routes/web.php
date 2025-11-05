@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\RoadmapController;
 use App\Http\Controllers\AuthControllers; // Pastikan nama controller ini sesuai
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,6 +64,13 @@ Route::middleware('auth')->group(function () {
 
     // Rute '/createuser' Anda, sekarang juga aman
     Route::post('/createuser', [CourseController::class, 'createuser']); // Pertimbangkan memberi nama rute ini
+
+    // 2. ADD THIS ROUTE FOR THE PROFILE
+    // This route will show the authenticated user's profile
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    
+    // (Optional) Add this if you also want to see other users' profiles
+    // Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.user');
 
     // Proses Logout
     Route::post('/logout', [AuthControllers::class, 'logout'])->name('logout');
