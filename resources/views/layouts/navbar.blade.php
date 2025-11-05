@@ -12,7 +12,8 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="/">
+                    <a class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}"
+                        href="{{ route('dashboard') }}">
                         <i class="fas fa-home me-1"></i>Dashboard
                     </a>
                 </li>
@@ -40,32 +41,35 @@
 
             <ul class="navbar-nav ms-auto">
                 @auth
-                {{-- PLACEHOLDER VERSION - CURRENTLY ACTIVE --}}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user me-1"></i> {{ auth()->user()->name }}
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <form action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="dropdown-item">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
+                    {{-- PLACEHOLDER VERSION - CURRENTLY ACTIVE --}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i> {{ auth()->user()->name }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('profile') }}"><i
+                                        class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                 @else
-                {{-- Tampilkan link Sign In jika belum login --}}
-                <li class="nav-item">
-                    <a class="btn btn-outline-success" href="{{ route('signin') }}">
-                        <i class="fas fa-sign-in-alt me-1"></i>Sign In
-                    </a>
-                </li>
+                    {{-- Tampilkan link Sign In jika belum login --}}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-success" href="{{ route('signin') }}">
+                            <i class="fas fa-sign-in-alt me-1"></i>Sign In
+                        </a>
+                    </li>
                 @endauth
             </ul>
         </div>

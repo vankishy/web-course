@@ -10,15 +10,16 @@ class ProfileController extends Controller
 {
     /**
      * Show the user's profile.
+     * If no ID is passed, it shows the authenticated user's profile.
      *
      * @param  int|null  $id
      * @return \Illuminate\View\View
      */
     public function show($id = null)
     {
-        // 1. Use static user ID 1 if no ID is given (your static logic)
+        // 1. If no ID is provided in the URL, use the logged-in user's ID
         if (is_null($id)) {
-            $id = 1; // Default to user 1
+            $id = auth()->id(); // <--- THIS IS THE CRITICAL CHANGE
         }
 
         // 2. Find the user
@@ -35,14 +36,13 @@ class ProfileController extends Controller
         // 4. Manually decode the 'lainnya' JSON string
         $profileData = [];
         if ($userProfile && !empty($userProfile->lainnya)) {
-            // We must manually decode the JSON string into an array
             $profileData = json_decode($userProfile->lainnya, true);
         }
 
         // 5. Pass BOTH the user object and the new profileData array to the view
         return view('profile', [
             'user' => $user,
-            'profileData' => $profileData, // Pass the decoded array
+            'profileData' => $profileData,
         ]);
     }
 }
