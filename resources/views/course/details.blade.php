@@ -11,26 +11,41 @@
                     <div class="card-body">
                         @php
                             $current = $currentDetail;
+                            $isBookmarked = false; // nanti ganti dengan hasil query kalau sudah ada di DB
                         @endphp
 
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="fw-bold mb-0">{{ $current->name ?? 'Pilih materi untuk mulai belajar' }}</h4>
+                            <h4 class="fw-bold mb-0">
+                                {{ $current->name ?? 'Pilih materi untuk mulai belajar' }}
+                            </h4>
 
-                            @if ($current)
-                                @if ($statuscourse)
-                                    <button class="btn btn-success btn-sm" disabled>
-                                        <i class="bi bi-check-circle me-1"></i> Done
-                                    </button>
-                                @else
-                                    <form action="{{ route('course.markdone', ['id' => $current['detail_course_id']]) }}"
-                                        method="POST" style="display:inline;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-outline-primary btn-sm">
-                                            <i class="bi bi-check2-square me-1"></i> Mark as Done
+                            <div class="d-flex align-items-center gap-2">
+                                {{-- Tombol Bookmark --}}
+                                <button class="btn btn-outline-dark btn-md">
+                                    @if ($isBookmarked)
+                                        <i class="fa-solid fa-bookmark"></i>
+                                    @else
+                                        <i class="fa-regular fa-bookmark"></i>
+                                    @endif
+                                </button>
+
+                                {{-- Tombol Done --}}
+                                @if ($current)
+                                    @if ($statuscourse)
+                                        <button class="btn btn-success btn-sm" disabled>
+                                            <i class="bi bi-check-circle me-1"></i> Done
                                         </button>
-                                    </form>
+                                    @else
+                                        <form action="{{ route('course.markdone', ['id' => $current['detail_course_id']]) }}"
+                                            method="POST" style="display:inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-check2-square me-1"></i> Mark as Done
+                                            </button>
+                                        </form>
+                                    @endif
                                 @endif
-                            @endif
+                            </div>
                         </div>
 
                         @if ($current)
