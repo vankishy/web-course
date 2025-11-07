@@ -8,15 +8,15 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <h1 class="display-4 fw-bold">Welcome back, {{ $user->name }}! 👋</h1>
+                    <h1 class="display-4 fw-bold">Welcome back, {{ $currentUser->name }}! 👋</h1>
                     <p class="lead">Continue your learning journey. Pick up where you left off or explore new topics.</p>
                     <div class="mt-4">
-                        <button class="btn btn-light btn-lg me-3">
+                        <a href="{{ route('course.index') }}" class="btn btn-light btn-lg me-3">
                             <i class="fas fa-play me-2"></i>Continue Learning
-                        </button>
-                        <button class="btn btn-outline-light btn-lg">
+                        </a>
+                        <a href="{{ route('course.index') }}" class="btn btn-outline-light btn-lg">
                             <i class="fas fa-compass me-2"></i>Explore Courses
-                        </button>
+                        </a>
                     </div>
                 </div>
                 <div class="col-lg-4 text-center">
@@ -38,8 +38,8 @@
                                     <i class="fas fa-book-open text-primary fa-2x"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h4 class="mb-0">{{ $stats['enrolled_courses'] }}</h4>
-                                    <p class="text-muted mb-0">Enrolled Courses</p>
+                                    <h4 class="mb-0">{{ $dashboardStats['roadmaps_started'] }}</h4>
+                                    <p class="text-muted mb-0">Paths Started</p>
                                 </div>
                             </div>
                         </div>
@@ -53,8 +53,8 @@
                                     <i class="fas fa-check-circle text-success fa-2x"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h4 class="mb-0">{{ $stats['completed_courses'] }}</h4>
-                                    <p class="text-muted mb-0">Completed</p>
+                                    <h4 class="mb-0">{{ $dashboardStats['completed_courses_count'] }}</h4>
+                                    <p class="text-muted mb-0">Tasks Completed</p>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                                     <i class="fas fa-clock text-warning fa-2x"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h4 class="mb-0">{{ $stats['watch_later'] }}</h4>
+                                    <h4 class="mb-0">{{ $dashboardStats['watch_later_count'] }}</h4>
                                     <p class="text-muted mb-0">Watch Later</p>
                                 </div>
                             </div>
@@ -83,7 +83,7 @@
                                     <i class="fas fa-hourglass-half text-info fa-2x"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h4 class="mb-0">{{ $stats['learning_hours'] }}h</h4>
+                                    <h4 class="mb-0">{{ $dashboardStats['total_learning_hours'] }}h</h4>
                                     <p class="text-muted mb-0">Learning Hours</p>
                                 </div>
                             </div>
@@ -109,7 +109,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-4">
-                            @foreach($featuredCourses as $course)
+                            @forelse($featuredCoursesList as $course)
                                 <div class="col-md-6">
                                     <div class="card card-hover h-100">
                                         <div class="card-body">
@@ -121,12 +121,12 @@
                                                 </div>
                                                 <div class="flex-grow-1 ms-3">
                                                     <h5 class="card-title mb-1">{{ $course->name }}</h5>
-                                                    <p class="card-text text-muted small">{{ $course->description }}</p>
+                                                    <p class="card-text text-muted small">{{ $course->desc }}</p>
                                                 </div>
                                             </div>
 
                                             <!-- Roadmap Tags -->
-                                            @if(isset($course->roadmaps) && count($course->roadmaps) > 0)
+                                            @if($course->roadmaps->isNotEmpty())
                                                 <div class="mb-3">
                                                     <small class="text-muted">Part of: </small>
                                                     @foreach($course->roadmaps as $roadmap)
@@ -137,15 +137,18 @@
 
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <span class="badge bg-primary">{{ $course->level }}</span>
-                                                    <span class="badge bg-secondary">{{ $course->duration }}</span>
+                                                    <!-- Level and Duration removed as data doesn't exist -->
                                                 </div>
-                                                <a href="#" class="btn btn-sm btn-outline-primary">View Course</a>
+                                                <a href="{{ route('course.subcourse', ['id' => $course->course_id]) }}" class="btn btn-sm btn-outline-primary">View Course</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            @empty
+                                <div class="col-12">
+                                    <p class="text-muted">No featured courses available at the moment.</p>
+                                </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -156,36 +159,40 @@
                         <h3 class="card-title mb-0">
                             <i class="fas fa-road text-success me-2"></i>Learning Paths
                         </h3>
-                        <a href="roadmap" class="btn btn-sm btn-outline-success">View All Paths</a>
+                        <a href="{{ route('roadmap.index') }}" class="btn btn-sm btn-outline-success">View All Paths</a>
                     </div>
                     <div class="card-body">
                         <div class="row g-4">
-                            @foreach($popularRoadmaps as $roadmap)
+                            @forelse($popularRoadmaps as $roadmap)
                                 <div class="col-md-4">
                                     <div class="card card-hover h-100">
                                         <div class="card-body">
                                             <h5 class="card-title">{{ $roadmap->name }}</h5>
                                             <p class="card-text">
                                                 <small class="text-muted">
-                                                    {{ $roadmap->course_count }} courses • {{ $roadmap->duration }}
+                                                    {{ $roadmap->course_count }} courses • {{ $roadmap->estimated_duration }}
                                                 </small>
                                             </p>
                                             <div class="d-flex justify-content-between align-items-center mb-3">
                                                 <small class="text-muted">
                                                     <i class="fas fa-users me-1"></i>
-                                                    {{ $roadmap->enrollments_count }} students
+                                                    {{ $roadmap->enrollment_count }} students
                                                 </small>
                                             </div>
                                             <div class="progress mb-3" style="height: 6px;">
                                                 <div class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
                                             </div>
-                                            <button class="btn btn-success btn-sm w-100">
+                                            <a href="{{ route('roadmap.show', ['slug' => $roadmap->slug]) }}" class="btn btn-success btn-sm w-100">
                                                 <i class="fas fa-play me-1"></i>Start Path
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            @empty
+                                <div class="col-12">
+                                    <p class="text-muted">No popular roadmaps available at the moment.</p>
+                                </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -202,24 +209,26 @@
                     </div>
                     <div class="card-body">
                         <div class="list-group list-group-flush">
-                            @foreach($recentActivity as $activity)
+                            @forelse($recentActivityFormatted as $activity)
                                 <div class="list-group-item px-0 border-0">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h6 class="mb-1">{{ $activity->course_name }}</h6>
-                                        <small class="text-muted">{{ $activity->time }}</small>
+                                        <small class="text-muted">{{ $activity->time_ago }}</small>
                                     </div>
                                     <p class="mb-1 text-muted">
                                         <i class="fas fa-circle text-success me-1 small"></i>
-                                        {{ $activity->action }}
+                                        {{ $activity->action_description }}
                                     </p>
                                 </div>
-                            @endforeach
+                            @empty
+                                <p class="text-muted mb-0">No recent activity.</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>
 
                 <!-- Quick Actions -->
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-header bg-white">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-bolt me-2"></i>Quick Actions
@@ -227,21 +236,47 @@
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
-                            <a href="#courses" class="btn btn-outline-primary btn-sm text-start">
+                            <a href="{{ route('course.index') }}" class="btn btn-outline-primary btn-sm text-start">
                                 <i class="fas fa-search me-2"></i>Browse Courses
                             </a>
-                            <a href="roadmap" class="btn btn-outline-success btn-sm text-start">
+                            <a href="{{ route('roadmap.index') }}" class="btn btn-outline-success btn-sm text-start">
                                 <i class="fas fa-road me-2"></i>View Roadmaps
                             </a>
                             <a href="#watchlater" class="btn btn-outline-warning btn-sm text-start">
                                 <i class="fas fa-clock me-2"></i>Watch Later
                             </a>
-                            <a href="/leaderboard" class="btn btn-outline-info btn-sm text-start">
+                            <a href="{{ route('leaderboard') }}" class="btn btn-outline-info btn-sm text-start">
                                 <i class="fas fa-trophy me-2"></i>Leaderboard
                             </a>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Watch Later Card -->
+                <div class="card" id="watchlater">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-clock text-warning me-2"></i>Watch Later
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            @forelse($watchLaterCourses as $item)
+                                <a href="{{ route('course.subcourse', ['id' => $item->course_id]) }}" class="list-group-item list-group-item-action px-0 border-0">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ $item->course_name }}</h6>
+                                    </div>
+                                    <p class="mb-1 text-muted small">
+                                        {{ \Illuminate\Support\Str::limit($item->course_description, 75) }}
+                                    </p>
+                                </a>
+                            @empty
+                                <p class="text-muted mb-0">Your watch later list is empty.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
