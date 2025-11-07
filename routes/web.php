@@ -25,7 +25,7 @@ Route::get('/', function () {
 // Hanya bisa diakses jika BELUM login.
 // Jika sudah login, akan diarahkan ke rute bernama 'dashboard' (yaitu /dashboard)
 Route::middleware('guest')->group(function () {
-    
+
     // Halaman Sign Up
     Route::get('/signup', [AuthControllers::class, 'registerPage'])->name('signup');
     // Proses Sign Up
@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function () {
 
     // Halaman Leaderboard
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
+    Route::post('/leaderboard/update-rankings', [LeaderboardController::class, 'updateRankings'])
+        ->name('leaderboard.update');
 
     // Halaman Roadmap
     Route::get('/roadmap', [RoadmapController::class, 'index'])->name('roadmap.index');
@@ -68,7 +70,7 @@ Route::middleware('auth')->group(function () {
     // 2. ADD THIS ROUTE FOR THE PROFILE
     // This route will show the authenticated user's profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
-    
+
     // (Optional) Add this if you also want to see other users' profiles
     // Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.user');
 

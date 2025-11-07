@@ -11,7 +11,22 @@ class Leaderboard extends Model
 
     protected $table = 'leaderboard';
     protected $primaryKey = 'leaderboard_id';
-    protected $fillable = [
 
+    protected $fillable = [
+        'urutan',
+        'user_id',
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
+
+    protected $dates = ['deleted_at'];
+
+    /**
+     * Get the user associated with the leaderboard entry
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
 }
