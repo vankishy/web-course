@@ -16,7 +16,6 @@ class CourseFactory extends Factory
      */
     public function definition(): array
     {
-        // Menyediakan data palsu untuk kolom Anda
         return [
             'name' => fake()->sentence(4),
             'desc' => fake()->paragraph(),
