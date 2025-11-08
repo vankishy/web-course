@@ -1,4 +1,4 @@
-<footer class="bg-dark text-white py-4 mt-5">
+<footer class="bg-dark text-white py-4 mt-auto">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -8,9 +8,9 @@
             <div class="col-md-3">
                 <h6>Quick Links</h6>
                 <ul class="list-unstyled">
-                    <li><a href="/" class="text-white-50 text-decoration-none">Dashboard</a></li>
-                    <li><a href="#courses" class="text-white-50 text-decoration-none">Courses</a></li>
-                    <li><a href="#roadmaps" class="text-white-50 text-decoration-none">Roadmaps</a></li>
+                    <li><a href="{{ route('dashboard') }}" class="text-white-50 text-decoration-none">Dashboard</a></li>
+                    <li><a href="{{ route('course.index') }}" class="text-white-50 text-decoration-none">Courses</a></li>
+                    <li><a href="{{ route('roadmap.index') }}" class="text-white-50 text-decoration-none">Roadmaps</a></li>
                 </ul>
             </div>
             <div class="col-md-3">

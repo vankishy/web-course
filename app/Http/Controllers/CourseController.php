@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Course;
 use App\Models\SubCourse;
 use App\Models\User;
 use App\Models\UserCourseHistory;
 use App\Models\UserCourseProgress;
-use DB;
+// use DB;
 use Exception;
-use Hash;
+// use Hash;
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class CourseController extends Controller
 {
@@ -46,7 +50,9 @@ class CourseController extends Controller
     public function details($subcourseid, Request $request)
     {
         try {
-            $userID = 1;
+            // ▼▼▼ 2. USE THE LOGGED-IN USER'S ID ▼▼▼
+            $userID = Auth::id(); // Was 1
+
             $data = SubCourse::with(['course', 'detailcourse'])
                 ->findOrFail($subcourseid);
 
@@ -73,13 +79,15 @@ class CourseController extends Controller
             // Cek status progress user
             $statuscourse = null;
             if ($currentDetail) {
-                $statuscourse = UserCourseProgress::where('user_id', $userID)
+                $statuscourse = UserCourseProgress::where('user_id', $userID) // <-- This now uses the correct ID
                     ->where('detail_course_id', $currentDetail->detail_course_id)
                     ->value('done');
                 // ->first();
+
+                // Panggil userhistory HANYA jika currentDetail valid
+                $this->userhistory($currentDetail->detail_course_id);
             }
 
-            $this->userhistory($currentDetail->detail_course_id);
 
             return view('course.details', [
                 'data' => $data,
@@ -95,19 +103,25 @@ class CourseController extends Controller
     {
         DB::beginTransaction();
         try {
-            $userID = 1;
+            // ▼▼▼ 3. USE THE LOGGED-IN USER'S ID ▼▼▼
+            $userID = Auth::id(); // Was 1
+
+            // Jika tidak ada user ID (tamu), jangan lakukan apa-apa
+            if (!$userID) {
+                DB::rollBack();
+                return;
+            }
 
             UserCourseHistory::updateOrCreate(
                 ['user_id' => $userID, 'detail_course_id' => $detailID],
                 ['last_seen' => now()]
             );
 
-            Db::commit();
+            DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'message' => "Terjadi kesalahan: " . $e->getMessage()
-            ]);
+            // Tidak perlu mengembalikan response json, cukup log atau abaikan
+            // Log::error('History Error: ' . $e->getMessage());
         }
     }
 
@@ -115,7 +129,14 @@ class CourseController extends Controller
     {
         DB::beginTransaction();
         try {
-            $userID = 1;
+            // ▼▼▼ 4. USE THE LOGGED-IN USER'S ID ▼▼▼
+            $userID = Auth::id(); // Was 1
+
+            // Jika tidak ada user ID, gagalkan
+            if (!$userID) {
+                return back()->with('error', 'Gagal menandai progress: Anda tidak login.');
+            }
+
             UserCourseProgress::updateOrCreate(
                 ["user_id" => $userID, 'detail_course_id' => $detailID],
                 ["done" => true]
@@ -134,7 +155,7 @@ class CourseController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|min:8|max:100',
-                'email' => 'required|email|unique:users,email',
+                'email' => 'required|email|unique:user,email', // Pastikan nama tabel benar
                 'password' => 'required|string|min:8|max:32',
             ]);
 
