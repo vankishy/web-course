@@ -38,7 +38,7 @@ class CourseTest extends TestCase
         $result = $controller->calculateProgress($userId, $detailCourses);
 
         // Assert
-        $this->assertEquals(100, $result); // 2/3 * 100 = 66.66 → 67
+        $this->assertEquals(67, $result); // 2/3 * 100 = 66.66 → 67
     }
 }
 
