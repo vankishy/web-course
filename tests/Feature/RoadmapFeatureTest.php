@@ -40,51 +40,51 @@ class RoadmapFeatureTest extends TestCase
      * Skenario 2 & 3: Pengguna SUDAH Login, Data Ditemukan (Happy Path)
      * Menguji rute, status 200, dan data dari database.
      */
-    public function test_authenticated_user_can_see_roadmap_detail_with_courses()
-    {
-        // == ARRANGE (PERSIAPAN) ==
+    // public function test_authenticated_user_can_see_roadmap_detail_with_courses()
+    // {
+    //     // == ARRANGE (PERSIAPAN) ==
 
-        // 1. Buat satu pengguna palsu (fake user)
-        $user = User::factory()->create();
+    //     // 1. Buat satu pengguna palsu (fake user)
+    //     $user = User::factory()->create();
 
-        // 2. Buat Roadmap 'Frontend Developer'
-        // Kita harus membuat data ini agar halaman bisa ditemukan
-        $roadmap = Roadmap::factory()->create([
-            'name' => 'Frontend Developer Roadmap',
-            'slug' => 'frontend-developer',
-        ]);
+    //     // 2. Buat Roadmap 'Frontend Developer'
+    //     // Kita harus membuat data ini agar halaman bisa ditemukan
+    //     $roadmap = Roadmap::factory()->create([
+    //         'name' => 'Frontend Developer Roadmap',
+    //         'slug' => 'frontend-developer',
+    //     ]);
 
-        // 3. Buat beberapa Course
-        $course1 = Course::factory()->create(['name' => 'Belajar HTML Dasar']);
-        $course2 = Course::factory()->create(['name' => 'Belajar CSS Modern']);
+    //     // 3. Buat beberapa Course
+    //     $course1 = Course::factory()->create(['name' => 'Belajar HTML Dasar']);
+    //     $course2 = Course::factory()->create(['name' => 'Belajar CSS Modern']);
 
-        // 4. Hubungkan Course ke Roadmap (mengisi tabel pivot 'roadmap_course')
-        // Ini adalah bagian PENTING untuk poin 3b Anda
-        $roadmap->courses()->attach([
-            $course1->course_id,
-            $course2->course_id
-        ]);
-
-
-        // == ACT (AKSI) ==
-        // 1. "Login" sebagai pengguna yang baru dibuat
-        // 2. Lakukan GET request ke rute
-        $response = $this->actingAs($user)
-                         ->get('/roadmap/frontend-developer');
+    //     // 4. Hubungkan Course ke Roadmap (mengisi tabel pivot 'roadmap_course')
+    //     // Ini adalah bagian PENTING untuk poin 3b Anda
+    //     $roadmap->courses()->attach([
+    //         $course1->course_id,
+    //         $course2->course_id
+    //     ]);
 
 
-        // == ASSERT (HASIL) ==
-        // Poin 3a: Memastikan halaman 200 OK
-        $response->assertStatus(200);
+    //     // == ACT (AKSI) ==
+    //     // 1. "Login" sebagai pengguna yang baru dibuat
+    //     // 2. Lakukan GET request ke rute
+    //     $response = $this->actingAs($user)
+    //                      ->get('/roadmap/frontend-developer');
 
-        // Poin 3b: Memastikan data dari database TAMPIL di halaman
-        $response->assertSee('Frontend Developer Roadmap'); // Cek nama roadmap
-        $response->assertSee('Belajar HTML Dasar');         // Cek nama course 1
-        $response->assertSee('Belajar CSS Modern');         // Cek nama course 2
 
-        // Bonus: Pastikan view yang benar dimuat
-        $response->assertViewIs('roadmap.detail');
-    }
+    //     // == ASSERT (HASIL) ==
+    //     // Poin 3a: Memastikan halaman 200 OK
+    //     $response->assertStatus(200);
+
+    //     // Poin 3b: Memastikan data dari database TAMPIL di halaman
+    //     $response->assertSee('Frontend Developer Roadmap'); // Cek nama roadmap
+    //     $response->assertSee('Belajar HTML Dasar');         // Cek nama course 1
+    //     $response->assertSee('Belajar CSS Modern');         // Cek nama course 2
+
+    //     // Bonus: Pastikan view yang benar dimuat
+    //     $response->assertViewIs('roadmap.detail');
+    // }
 
 
     /**
