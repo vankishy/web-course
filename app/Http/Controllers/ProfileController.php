@@ -3,47 +3,66 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserProfile; // We need to use both models
+use App\Models\UserProfile;
+use App\Models\UserCourseHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon; // <-- ADDED: Need this for diffForHumans() on raw data
 
 class ProfileController extends Controller
 {
     /**
      * Show the user's profile.
-     * If no ID is passed, it shows the authenticated user's profile.
      *
      * @param  int|null  $id
      * @return \Illuminate\View\View
      */
     public function show($id = null)
     {
-        // 1. If no ID is provided in the URL, use the logged-in user's ID
         if (is_null($id)) {
-            $id = auth()->id(); // <--- THIS IS THE CRITICAL CHANGE
+            $id = auth()->id();
         }
 
-        // 2. Find the user
         $user = User::find($id);
 
-        // Handle if user not found
         if (!$user) {
             abort(404, 'User not found');
         }
 
-        // 3. Manually find the user's profile
         $userProfile = UserProfile::where('user_id', $user->user_id)->first();
 
-        // 4. Manually decode the 'lainnya' JSON string
         $profileData = [];
         if ($userProfile && !empty($userProfile->lainnya)) {
             $profileData = json_decode($userProfile->lainnya, true);
         }
 
-        // 5. Pass BOTH the user object and the new profileData array to the view
+        // ▼▼▼ FIXED: Query to fetch history with corrected table names and select keys ▼▼▼
+        $recentActivity = UserCourseHistory::where('user_id', $user->user_id)
+            ->join('detail_course as dc', 'dc.detail_course_id', '=', 'user_course_history.detail_course_id')
+            ->join('subcourse as sc', 'sc.subcourse_id', '=', 'dc.subcourse_id') // Fix from previous step
+            ->select(
+                'sc.name as course_name',
+                'dc.name as detail_name',
+                'user_course_history.last_seen', // This is a string/raw datetime
+                'sc.subcourse_id'
+            )
+            ->orderBy('user_course_history.last_seen', 'desc')
+            ->limit(5)
+            ->get();
+
+        // ▼▼▼ FIXED: Manual Carbon casting for diffForHumans() to fix the error ▼▼▼
+        $recentActivityFormatted = $recentActivity->map(function ($activity) {
+            // FIX: Manually cast the string to a Carbon object before calling diffForHumans()
+            $activity->time_ago = Carbon::parse($activity->last_seen)->diffForHumans();
+            $activity->action_description = 'Last viewed: ' . $activity->detail_name;
+            return $activity;
+        });
+        // ▲▲▲ END FIXED SECTION ▲▲▲
+
         return view('profile', [
             'user' => $user,
             'profileData' => $profileData,
+            'recentActivityFormatted' => $recentActivityFormatted,
         ]);
     }
 }
-

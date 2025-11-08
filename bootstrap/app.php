@@ -12,7 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Alias your custom middleware here
+        $middleware->alias([
+            // Use 'auth.custom' or any unique alias you prefer
+            'auth.custom' => \App\Http\Middleware\Authenticate::class, 
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Handle error 404 (Not Found)

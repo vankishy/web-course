@@ -41,7 +41,7 @@ Route::middleware('guest')->group(function () {
 // == RUTE UNTUK PENGGUNA YANG SUDAH LOGIN ==
 // Hanya bisa diakses jika SUDAH login.
 // Jika belum login, akan diarahkan ke rute bernama 'signin' (yaitu /signin)
-Route::middleware('auth')->group(function () {
+Route::middleware('auth.custom')->group(function () {
 
     // Halaman Dashboard Utama SEKARANG PINDAH ke '/dashboard'
     // Nama 'dashboard' tetap digunakan agar redirect setelah login berfungsi
