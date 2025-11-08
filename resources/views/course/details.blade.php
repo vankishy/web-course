@@ -78,6 +78,20 @@
                     <div class="card-body">
                         <h5 class="fw-semibold mb-3">{{ $data->name }}</h5>
                         <p class="text-muted mb-3"><small>Course: {{ $data->course->name }}</small></p>
+                        {{-- Tambahan progress --}}
+                        @if(isset($progress))
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">Progress kamu:</small>
+                                    <small class="fw-semibold">{{ $progress }}%</small>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progress }}%"
+                                        aria-valuenow="{{ $progress }}" aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
                         @if ($data->detailcourse->isEmpty())
                             <div class="alert alert-warning">Belum ada materi.</div>
