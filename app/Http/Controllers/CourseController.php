@@ -52,9 +52,11 @@ class CourseController extends Controller
         try {
             // ▼▼▼ 2. USE THE LOGGED-IN USER'S ID ▼▼▼
             $userID = Auth::id(); // Was 1
+            $progress = 0;
 
             $data = SubCourse::with(['course', 'detailcourse'])
                 ->findOrFail($subcourseid);
+
 
             $currentId = $request->query('detail');
             $currentDetail = null;
@@ -83,6 +85,7 @@ class CourseController extends Controller
                     ->where('detail_course_id', $currentDetail->detail_course_id)
                     ->value('done');
                 // ->first();
+                $progress = $this->calculateProgress($userID, $data->detailcourse->pluck('detail_course_id')->all());
 
                 // Panggil userhistory HANYA jika currentDetail valid
                 $this->userhistory($currentDetail->detail_course_id);
@@ -93,6 +96,7 @@ class CourseController extends Controller
                 'data' => $data,
                 'currentDetail' => $currentDetail,
                 'statuscourse' => $statuscourse,
+                'progress' => $progress
             ]);
         } catch (Exception $e) {
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -148,6 +152,23 @@ class CourseController extends Controller
             return back()->with('error', 'Gagal menandai progress: ' . $e->getMessage());
         }
     }
+
+    public function calculateProgress($userId, array $detailIds)
+    {
+        if (empty($detailIds) || !$userId) {
+            return 0;
+        }
+
+        $doneCount = UserCourseProgress::where('user_id', $userId)
+            ->whereIn('detail_course_id', $detailIds)
+            ->where('done', true)
+            ->count();
+
+        $total = count($detailIds);
+
+        return $total > 0 ? round(($doneCount / $total) * 100) : 0;
+    }
+
 
     public function createuser(Request $request)
     {
