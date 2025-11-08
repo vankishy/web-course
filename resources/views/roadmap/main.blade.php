@@ -4,13 +4,11 @@
 <div class="container mt-5">
     <h2 class="mb-4"><i class="fas fa-road text-success me-2"></i>My Learning Paths</h2>
 
-    {{-- Kalau user belum punya roadmap --}}
     @if($roadmaps->isEmpty())
         <div class="alert alert-info">
             You are not following any roadmap yet. Explore the dashboard to find one!
         </div>
     @else
-        {{-- Menggunakan struktur Grid dan Card dari Dashboard --}}
         <div class="row g-4">
             @foreach($roadmaps as $roadmap)
                 <div class="col-md-4">
@@ -23,12 +21,10 @@
                             {{-- Info Ringkas --}}
                             <p class="card-text">
                                 <small class="text-muted">
-                                    {{-- Menampilkan jumlah course saja --}}
                                     {{ $roadmap->course_count ?? $roadmap->courses->count() }} courses • {{ $roadmap->duration ?? 'N/A' }}
                                 </small>
                             </p>
-                            
-                            {{-- Tombol Aksi (Menuju Detail Course List) --}}
+
                             <a href="{{ route('roadmap.show', $roadmap->slug) }}" class="btn btn-success btn-sm w-100 mt-auto">
                                 <i class="fas fa-play me-1"></i>Start Path
                             </a>
@@ -41,7 +37,6 @@
 
     <hr class="my-5">
 
-    {{-- BAGIAN 2: ROADMAP REKOMENDASI --}}
     <h2 class="mb-4"><i class="fas fa-star me-2 text-warning"></i>Recommended Paths</h2>
 
     @if($recommendedRoadmaps->isEmpty())
@@ -64,17 +59,9 @@
                                     {{ $roadmap->courses->count() }} courses • {{ $roadmap->duration ?? 'N/A' }}
                                 </small>
                             </p>
-                            
-                            {{-- Tombol Aksi: Arahkan ke Detail Roadmap --}}
                             <a href="{{ route('roadmap.show', $roadmap->slug) }}" class="btn btn-outline-warning btn-sm w-100 mt-auto">
                                 <i class="fas fa-search me-1"></i>View Details
                             </a>
-                            
-                            <!-- {{-- Opsional: Tambahkan tombol untuk langsung "Follow" --}}
-                            {{-- <form method="POST" action="{{ route('user.roadmap.follow', $roadmap->roadmap_id) }}">
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-warning w-100 mt-2">Follow Path</button>
-                            </form> --}} -->
                         </div>
                     </div>
                 </div>
