@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserCourseProgress extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes,HasFactory;
 
     protected $table = 'user_course_progress';
     protected $primaryKey = 'user_course_progress_id';

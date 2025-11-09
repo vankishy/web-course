@@ -6,6 +6,9 @@ use App\Http\Controllers\CourseController;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class CourseTest extends TestCase
 {
 
@@ -41,4 +44,3 @@ class CourseTest extends TestCase
         $this->assertEquals(67, $result); // 2/3 * 100 = 66.66 → 67
     }
 }
-
