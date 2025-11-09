@@ -40,7 +40,7 @@ jobs:
 
       # 4. Menjalankan Tes & Membuat Laporan Coverage
       - name: Run Tests and Generate Coverage
-        run: php artisan test --coverage-clover build/logs/clover.xml
+        run: DB_DATABASE=:memory: php artisan test --coverage-clover build/logs/clover.xml
 
       # 5. Menjalankan Analisis SonarCloud
       - name: SonarCloud Scan
