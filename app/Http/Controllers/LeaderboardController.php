@@ -35,7 +35,7 @@ class LeaderboardController extends Controller
                         'points' => $this->calculateUserPoints($entry->user_id),
                         'completed_courses' => $this->getCompletedCoursesCount($entry->user_id),
                         'badges' => $this->getUserBadges($entry->user_id),
-                        // 'is_current_user' => $entry->user_id === $user->user_id
+                        'is_current_user' => $entry->user_id === $user->user_id
                     ];
                 });
 
