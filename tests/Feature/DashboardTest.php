@@ -107,7 +107,7 @@ class DashboardTest extends TestCase
 
         $user = User::factory()->create([
             'name' => 'Test User',
-            'created_at' => Carbon::parse('2025-04-01 10:00:00', 'Asia/Jakarta')
+            'created_at' => Carbon::parse('2025-05-01 10:00:00', 'Asia/Jakarta')
         ]);
 
         $response = $this->actingAs($user)->get(route('dashboard'));
