@@ -1,11 +1,9 @@
 name: SonarCloud Analysis
 
 on:
-  # Memicu workflow ini setiap kali ada push ke branch 'main'
   push:
     branches:
-      - main  # GANTI INI jika branch utama Anda namanya 'master'
-  # Juga memicu saat ada Pull Request
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -13,20 +11,31 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest # Menggunakan server Ubuntu virtual
+    
+    # Blok 'services' ini sudah berada di posisi yang benar
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: laravel_test
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       # 1. Mengambil kode Anda dari GitHub
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # 0 berarti ambil semua riwayat (penting untuk SonarCloud)
+          fetch-depth: 0
 
       # 2. Menyiapkan lingkungan PHP
-      - name: Setup PHP with Xdebug
+      - name: 2. Setup PHP Environment
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4' # Pastikan versi ini sesuai dengan versi Sail Anda
-          extensions: dom, curl, libxml, mbstring, zip, pdo, pdo_mysql, bcmath
-          coverage: xdebug # Ini akan mengaktifkan driver coverage
+          php-version: '8.4' # Sesuaikan versinya
+          extensions: pdo_mysql, mbstring, dom, fileinfo, bcmath, exif, pcov # <-- TAMBAHKAN 'pcov' di sini
+          coverage: pcov # <-- UBAH DARI 'none' JADI 'pcov'
 
       # 3. Menyiapkan Laravel untuk tes
       - name: Copy .env
@@ -40,14 +49,23 @@ jobs:
 
       # 4. Menjalankan Tes & Membuat Laporan Coverage
       - name: Run Tests and Generate Coverage
-        run: DB_DATABASE=:memory: php artisan test --coverage-clover build/logs/clover.xml
+        env:
+          DB_CONNECTION: mysql
+          DB_DATABASE: laravel_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+        run: |
+          mkdir -p build/logs
+          php artisan test --coverage-clover build/logs/clover.xml
 
       # 5. Menjalankan Analisis SonarCloud
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Token bawaan GitHub
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Token yang sudah disimpan pemilik
+          SONAR_TOKEN: ${{ secrets.devopscok }}   # Token yang sudah disimpan pemilik
         with:
           args: >
             -Dsonar.projectKey=vankishy_web-course
