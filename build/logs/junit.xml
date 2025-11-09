@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/var/www/html/phpunit.xml" tests="5" assertions="11" errors="0" failures="0" skipped="0" time="0.634889">
+    <testsuite name="Unit" tests="2" assertions="2" errors="0" failures="0" skipped="0" time="0.047928">
+      <testsuite name="Tests\Unit\CourseTest" file="/var/www/html/tests/Unit/CourseTest.php" tests="2" assertions="2" errors="0" failures="0" skipped="0" time="0.047928">
+        <testcase name="it_returns_zero_when_no_courses" file="/var/www/html/tests/Unit/CourseTest.php" line="13" class="Tests\Unit\CourseTest" classname="Tests.Unit.CourseTest" assertions="1" time="0.043615"/>
+        <testcase name="it_calculates_progress_correctly" file="/var/www/html/tests/Unit/CourseTest.php" line="23" class="Tests\Unit\CourseTest" classname="Tests.Unit.CourseTest" assertions="1" time="0.004314"/>
+      </testsuite>
+    </testsuite>
+    <testsuite name="Feature" tests="3" assertions="9" errors="0" failures="0" skipped="0" time="0.586961">
+      <testsuite name="Tests\Feature\RoadmapFeatureTest" file="/var/www/html/tests/Feature/RoadmapFeatureTest.php" tests="3" assertions="9" errors="0" failures="0" skipped="0" time="0.586961">
+        <testcase name="test_guest_cannot_access_roadmap_detail_page" file="/var/www/html/tests/Feature/RoadmapFeatureTest.php" line="16" class="Tests\Feature\RoadmapFeatureTest" classname="Tests.Feature.RoadmapFeatureTest" assertions="3" time="0.477539"/>
+        <testcase name="test_authenticated_user_can_see_roadmap_detail_with_courses" file="/var/www/html/tests/Feature/RoadmapFeatureTest.php" line="26" class="Tests\Feature\RoadmapFeatureTest" classname="Tests.Feature.RoadmapFeatureTest" assertions="5" time="0.079949"/>
+        <testcase name="test_authenticated_user_gets_404_for_invalid_slug" file="/var/www/html/tests/Feature/RoadmapFeatureTest.php" line="57" class="Tests\Feature\RoadmapFeatureTest" classname="Tests.Feature.RoadmapFeatureTest" assertions="1" time="0.029473"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
