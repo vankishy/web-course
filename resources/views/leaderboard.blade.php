@@ -92,11 +92,26 @@
             <!-- Leaderboard Table -->
             <div class="col-lg-8">
                 <div class="card">
-                    <div class="card-header bg-white">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0">
                             <i class="fas fa-crown text-warning me-2"></i>Top 10 Learners
                         </h3>
+
+                        <!-- 🔥 Added Refresh & Filter -->
+                        <div class="d-flex align-items-center">
+                            <form method="GET" action="{{ route('leaderboard') }}" class="me-2">
+                                <select name="filter" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    <option value="all" {{ request('filter') == 'all' ? 'selected' : '' }}>All Time</option>
+                                    <option value="week" {{ request('filter') == 'week' ? 'selected' : '' }}>This Week</option>
+                                    <option value="month" {{ request('filter') == 'month' ? 'selected' : '' }}>This Month</option>
+                                </select>
+                            </form>
+                            <a href="{{ route('leaderboard') }}" class="btn btn-outline-secondary btn-sm" title="Refresh">
+                                <i class="fas fa-sync-alt"></i>
+                            </a>
+                        </div>
                     </div>
+
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
@@ -211,7 +226,7 @@
                 @endif
             </div>
 
-            <!-- Sidebar -->
+            <!-- Sidebar (unchanged) -->
             <div class="col-lg-4">
                 <!-- How Points Work -->
                 <div class="card mb-4">
@@ -222,22 +237,10 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled mb-0">
-                            <li class="mb-3">
-                                <i class="fas fa-check-circle text-success me-2"></i>
-                                <strong>100 points</strong> per completed course
-                            </li>
-                            <li class="mb-3">
-                                <i class="fas fa-road text-primary me-2"></i>
-                                <strong>50 points</strong> per enrolled roadmap
-                            </li>
-                            <li class="mb-3">
-                                <i class="fas fa-trophy text-warning me-2"></i>
-                                <strong>Bonus points</strong> for earning badges
-                            </li>
-                            <li class="mb-0">
-                                <i class="fas fa-clock text-info me-2"></i>
-                                Rankings updated <strong>daily</strong>
-                            </li>
+                            <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i><strong>100 points</strong> per completed course</li>
+                            <li class="mb-3"><i class="fas fa-road text-primary me-2"></i><strong>50 points</strong> per enrolled roadmap</li>
+                            <li class="mb-3"><i class="fas fa-trophy text-warning me-2"></i><strong>Bonus points</strong> for earning badges</li>
+                            <li class="mb-0"><i class="fas fa-clock text-info me-2"></i>Rankings updated <strong>daily</strong></li>
                         </ul>
                     </div>
                 </div>
@@ -250,51 +253,23 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <span class="badge bg-warning text-dark me-2 mb-2">
-                                <i class="fas fa-trophy me-1"></i>Master Learner
-                            </span>
-                            <small class="text-muted d-block">Complete 15+ courses</small>
-                        </div>
-                        <div class="mb-3">
-                            <span class="badge bg-primary text-white me-2 mb-2">
-                                <i class="fas fa-medal me-1"></i>Dedicated
-                            </span>
-                            <small class="text-muted d-block">Complete 10+ courses</small>
-                        </div>
-                        <div class="mb-3">
-                            <span class="badge bg-success text-white me-2 mb-2">
-                                <i class="fas fa-star me-1"></i>Quick Start
-                            </span>
-                            <small class="text-muted d-block">Complete 5+ courses</small>
-                        </div>
-                        <div class="mb-0">
-                            <span class="badge bg-info text-white me-2 mb-2">
-                                <i class="fas fa-bolt me-1"></i>Speed Runner
-                            </span>
-                            <small class="text-muted d-block">Complete course in record time</small>
-                        </div>
+                        <div class="mb-3"><span class="badge bg-warning text-dark me-2 mb-2"><i class="fas fa-trophy me-1"></i>Master Learner</span><small class="text-muted d-block">Complete 15+ courses</small></div>
+                        <div class="mb-3"><span class="badge bg-primary text-white me-2 mb-2"><i class="fas fa-medal me-1"></i>Dedicated</span><small class="text-muted d-block">Complete 10+ courses</small></div>
+                        <div class="mb-3"><span class="badge bg-success text-white me-2 mb-2"><i class="fas fa-star me-1"></i>Quick Start</span><small class="text-muted d-block">Complete 5+ courses</small></div>
+                        <div class="mb-0"><span class="badge bg-info text-white me-2 mb-2"><i class="fas fa-bolt me-1"></i>Speed Runner</span><small class="text-muted d-block">Complete course in record time</small></div>
                     </div>
                 </div>
 
                 <!-- Quick Actions -->
                 <div class="card">
                     <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-bolt me-2"></i>Quick Actions
-                        </h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
-                            <a href="/leaderboard" class="btn btn-outline-primary btn-sm text-start">
-                                <i class="fas fa-home me-2"></i>Back to Dashboard
-                            </a>
-                            <a href="#courses" class="btn btn-outline-success btn-sm text-start">
-                                <i class="fas fa-book me-2"></i>Start Learning
-                            </a>
-                            <a href="#roadmaps" class="btn btn-outline-warning btn-sm text-start">
-                                <i class="fas fa-road me-2"></i>View Roadmaps
-                            </a>
+                            <a href="/leaderboard" class="btn btn-outline-primary btn-sm text-start"><i class="fas fa-home me-2"></i>Back to Dashboard</a>
+                            <a href="#courses" class="btn btn-outline-success btn-sm text-start"><i class="fas fa-book me-2"></i>Start Learning</a>
+                            <a href="#roadmaps" class="btn btn-outline-warning btn-sm text-start"><i class="fas fa-road me-2"></i>View Roadmaps</a>
                         </div>
                     </div>
                 </div>

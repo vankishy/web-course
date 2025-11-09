@@ -15,8 +15,6 @@ class LeaderboardController extends Controller
 {
     public function index()
     {
-        $unusedVariable = "testing github actions & sonar";
-
         try {
             // Get authenticated user
             $user = Auth::user();
