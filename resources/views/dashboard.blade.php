@@ -13,9 +13,15 @@
                 <p class="text-white-50 mb-2">
                     <i class="fas fa-calendar-alt me-2"></i>Member for {{ $accountAge }}
                 </p>
-
                 <p class="lead">Continue your learning journey. Pick up where you left off or explore new topics.</p>
-
+                <div class="mt-4">
+                    <a href="{{ route('course.index') }}" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-play me-2"></i>Continue Learning
+                    </a>
+                    <a href="{{ route('course.index') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-compass me-2"></i>Explore Courses
+                    </a>
+                </div>
                 <div class="mt-4">
                 </div>
             </div>
