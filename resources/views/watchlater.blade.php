@@ -10,7 +10,7 @@
                     <h1 class="display-4 fw-bold">
                         Watch Later 🕒💾
                     </h1>
-                    <p class="lead">ini deskrisi!</p>
+                    <p class="lead">ini deskripsi!</p>
                 </div>
                 <div class="col-lg-4 text-center">
                     <i class="fas fa-clock display-1 opacity-75"></i>
@@ -23,10 +23,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-10 offset-md-1">
-                    {{-- Kita tidak perlu judul H1 lagi di sini karena sudah ada di Hero Section --}}
-
+                    {{-- Loop melalui item watch later --}}
                     @forelse ($watchLaterItems as $item)
-                        {{-- Memastikan semua relasi data ada --}}
+                        {{-- Memastikan semua relasi data --}}
                         @if ($item->detailCourse && $item->detailCourse->subcourse && $item->detailCourse->subcourse->course)
                             <div class="card mb-3 shadow-sm card-hover">
                                 <div class="row g-0">
@@ -77,7 +76,7 @@
                                             {{-- Tombol Tonton Sekarang --}}
                                             <a href="{{ url('course/subcourse/details/' . $item->detailCourse->subcourse_id . '?detail=' . $item->detailCourse->detail_course_id) }}"
                                                 class="btn btn-success mt-2">
-                                                <i class="fas fa-play me-1"></i> Watch Now
+                                                <i class="fas fa-play me-1"></i> Go There!
                                             </a>
                                         </div>
                                     </div>
