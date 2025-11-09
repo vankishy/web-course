@@ -61,10 +61,11 @@ jobs:
 
       # 5. Menjalankan Analisis SonarCloud
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v6 # <-- GANTI KE INI
+        
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Token bawaan GitHub
-          SONAR_TOKEN: ${{ secrets.devopscok }}   # Token yang sudah disimpan pemilik
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Token yang sudah disimpan pemilik
         with:
           args: >
             -Dsonar.projectKey=vankishy_web-course
