@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Course;
-use App\Models\Subcourse;
+use App\Models\SubCourse;
 use App\Models\DetailCourse;
 use App\Models\Roadmap;
 use App\Models\WatchLater;
