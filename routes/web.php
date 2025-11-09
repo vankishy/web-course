@@ -6,6 +6,7 @@ use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\RoadmapController;
 use App\Http\Controllers\AuthControllers;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WatchLaterController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,6 +41,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     // Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.user');
+
+    // == WATCH LATER ROUTES (TAMBAHKAN BLOK INI) ==
+    Route::get('/watchlater', [WatchLaterController::class, 'index'])->name('watchlater.index');
+    Route::post('/watchlater', [WatchLaterController::class, 'store'])->name('watchlater.store');
+    Route::delete('/watchlater/{watchLater}', [WatchLaterController::class, 'destroy'])->name('watchlater.destroy');
+    // == AKHIR DARI WATCH LATER ROUTES ==
 
     Route::post('/logout', [AuthControllers::class, 'logout'])->name('logout');
 });
