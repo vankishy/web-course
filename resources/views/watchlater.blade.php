@@ -10,7 +10,8 @@
                     <h1 class="display-4 fw-bold">
                         Watch Later 🕒💾
                     </h1>
-                    <p class="lead">ini deskripsi!</p>
+                    
+                    <p class="lead"> Access all the materials you saved for later and continue your learning journey.</p>
                 </div>
                 <div class="col-lg-4 text-center">
                     <i class="fas fa-clock display-1 opacity-75"></i>

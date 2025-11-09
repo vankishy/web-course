@@ -103,7 +103,7 @@ class WatchLaterTest extends TestCase
         $response = $this->actingAs($this->user)
             ->delete(route('watchlater.destroy', $itemOrangLain->watchlater_id));
 
-        $response->assertStatus(200); 
+        $response->assertStatus(403); 
 
         $this->assertDatabaseHas('watchlater', [
             'watchlater_id' => $itemOrangLain->watchlater_id
