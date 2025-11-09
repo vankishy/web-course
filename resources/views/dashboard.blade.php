@@ -130,36 +130,6 @@
                                             <p class="card-text text-muted small">{{ $course->desc }}</p>
                                         </div>
                                     </div>
-<!-- Main Content -->
-<div class="container my-5">
-    <div class="row">
-        <!-- Left Column - Courses & Roadmaps -->
-        <div class="col-lg-8">
-            <!-- Featured Courses -->
-            <div class="card mb-4" id="courses">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">
-                        <i class="fas fa-star text-warning me-2"></i>Featured Courses
-                    </h3>
-                    <a href="{{route('course.index')}}" class="btn btn-sm btn-outline-primary">View All Courses</a>
-                </div>
-                <div class="card-body">
-                    <div class="row g-4">
-                        @forelse($featuredCoursesList as $course)
-                        <div class="col-md-6">
-                            <div class="card card-hover h-100">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-start mb-3">
-                                        <div class="flex-shrink-0">
-                                            <div class="bg-primary rounded p-2 text-white">
-                                                <i class="fas fa-book"></i>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h5 class="card-title mb-1">{{ $course->name }}</h5>
-                                            <p class="card-text text-muted small">{{ $course->desc }}</p>
-                                        </div>
-                                    </div>
 
                                     <!-- Roadmap Tags -->
                                     @if($course->roadmaps->isNotEmpty())
@@ -170,33 +140,7 @@
                                         @endforeach
                                     </div>
                                     @endif
-                                    <!-- Roadmap Tags -->
-                                    @if($course->roadmaps->isNotEmpty())
-                                    <div class="mb-3">
-                                        <small class="text-muted">Part of: </small>
-                                        @foreach($course->roadmaps as $roadmap)
-                                        <span class="badge bg-light text-dark border me-1">{{ $roadmap->name }}</span>
-                                        @endforeach
-                                    </div>
-                                    @endif
 
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <!-- Level and Duration removed as data doesn't exist -->
-                                        </div>
-                                        <a href="{{ route('course.subcourse', ['id' => $course->course_id]) }}" class="btn btn-sm btn-outline-primary">View Course</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @empty
-                        <div class="col-12">
-                            <p class="text-muted">No featured courses available at the moment.</p>
-                        </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <!-- Level and Duration removed as data doesn't exist -->
@@ -259,79 +203,7 @@
                 </div>
             </div>
         </div>
-            <!-- Learning Paths -->
-            <div class="card" id="roadmaps">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">
-                        <i class="fas fa-road text-success me-2"></i>Learning Paths
-                    </h3>
-                    <a href="{{ route('roadmap.index') }}" class="btn btn-sm btn-outline-success">View All Paths</a>
-                </div>
-                <div class="card-body">
-                    <div class="row g-4">
-                        @forelse($popularRoadmaps as $roadmap)
-                        <div class="col-md-4">
-                            <div class="card card-hover h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $roadmap->name }}</h5>
-                                    <p class="card-text">
-                                        <small class="text-muted">
-                                            {{ $roadmap->course_count }} courses • {{ $roadmap->estimated_duration }}
-                                        </small>
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <small class="text-muted">
-                                            <i class="fas fa-users me-1"></i>
-                                            {{ $roadmap->enrollment_count }} students
-                                        </small>
-                                    </div>
-                                    <div class="progress mb-3" style="height: 6px;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
-                                    </div>
-                                    <a href="{{ route('roadmap.show', ['slug' => $roadmap->slug]) }}" class="btn btn-success btn-sm w-100">
-                                        <i class="fas fa-play me-1"></i>Start Path
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        @empty
-                        <div class="col-12">
-                            <p class="text-muted">No popular roadmaps available at the moment.</p>
-                        </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Right Column - Activity & Quick Actions -->
-        <div class="col-lg-4">
-            <!-- Recent Activity -->
-            <div class="card mb-4">
-                <div class="card-header bg-white">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-history me-2"></i>Recent Activity
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        @forelse($recentActivityFormatted as $activity)
-                        <div class="list-group-item px-0 border-0">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{ $activity->course_name }}</h6>
-                                <small class="text-muted">{{ $activity->time_ago }}</small>
-                            </div>
-                            <p class="mb-1 text-muted">
-                                <i class="fas fa-circle text-success me-1 small"></i>
-                                {{ $activity->action_description }}
-                            </p>
-                        </div>
-                        @empty
-                        <p class="text-muted mb-0">No recent activity.</p>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
         <!-- Right Column - Activity & Quick Actions -->
         <div class="col-lg-4">
             <!-- Recent Activity -->
