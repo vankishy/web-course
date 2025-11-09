@@ -31,7 +31,7 @@ class LeaderboardTest extends TestCase
      */
     public function test_authenticated_user_can_view_leaderboard()
     {
-        $user = User::factory()->create(['name' => 'John Doe']);
+        $user = User::factory()->create(['name' => 'Raphael Permana Barus']);
 
         $response = $this->actingAs($user)->get('/leaderboard');
 
