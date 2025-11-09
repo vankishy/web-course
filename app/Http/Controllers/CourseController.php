@@ -8,6 +8,7 @@ use App\Models\SubCourse;
 use App\Models\User;
 use App\Models\UserCourseHistory;
 use App\Models\UserCourseProgress;
+use App\Models\WatchLater; // BARU: Tambahkan ini
 // use DB;
 use Exception;
 // use Hash;
@@ -80,12 +81,23 @@ class CourseController extends Controller
 
             // Cek status progress user
             $statuscourse = null;
+            $watchLaterItem = null; // ijup watchlater: Inisialisasi item
+            $isBookmarked = false; // ijup watchlater: Inisialisasi status
+
             if ($currentDetail) {
                 $statuscourse = UserCourseProgress::where('user_id', $userID) // <-- This now uses the correct ID
                     ->where('detail_course_id', $currentDetail->detail_course_id)
                     ->value('done');
                 // ->first();
                 $progress = $this->calculateProgress($userID, $data->detailcourse->pluck('detail_course_id')->all());
+
+                // ijup watchlater: Cek status bookmark HANYA jika user login
+                if ($userID) {
+                    $watchLaterItem = WatchLater::where('user_id', $userID)
+                                            ->where('detail_course_id', $currentDetail->detail_course_id)
+                                            ->first();
+                    $isBookmarked = (bool) $watchLaterItem;
+                }
 
                 // Panggil userhistory HANYA jika currentDetail valid
                 $this->userhistory($currentDetail->detail_course_id);
@@ -96,7 +108,9 @@ class CourseController extends Controller
                 'data' => $data,
                 'currentDetail' => $currentDetail,
                 'statuscourse' => $statuscourse,
-                'progress' => $progress
+                'progress' => $progress,
+                'isBookmarked' => $isBookmarked, // ijupwatchlater: Kirim status ke view
+                'watchLaterItem' => $watchLaterItem // ijupwatchlater: Kirim item (atau null) ke view
             ]);
         } catch (Exception $e) {
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
