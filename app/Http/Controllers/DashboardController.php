@@ -19,20 +19,31 @@ class DashboardController extends Controller
         if (!$currentUser) {
             return redirect()->route('signin');
         }
-        /** @var \App\Models\User $currentUser */ // Type-hint for IDE
+
+        $hour = Carbon::now('Asia/Jakarta')->hour;
+        $greeting = match(true) {
+            $hour < 12 => 'Good Morning',
+            $hour < 18 => 'Good Afternoon',
+            default => 'Good Evening',
+        };
+
+        $accountAge = str_replace(' ago', '', $currentUser->created_at->diffForHumans());
+
+        /** @var \App\Models\User $currentUser */
         $dashboardStats = [
             'roadmaps_started' => $currentUser->roadmaps()->count(),
             'completed_courses_count' => UserCourseProgress::where('user_id', $currentUser->user_id)->where('done', 1)->count(),
             'watch_later_count' => WatchLater::where('user_id', $currentUser->user_id)->whereNull('deleted_at')->count(),
             'total_learning_hours' => 24
         ];
+        
         $featuredCoursesList = Course::with('roadmaps')->take(6)->get();
         $popularRoadmapsList = Roadmap::withCount(['courses', 'userRoadmaps'])->orderByDesc('user_roadmaps_count')->take(3)->get();
         $popularRoadmaps = $popularRoadmapsList->map(function ($roadmap) {
-            $roadmap->course_count = $roadmap->courses_count;
-            $roadmap->enrollment_count = $roadmap->user_roadmaps_count;
-            $roadmap->estimated_duration = '5 Months';
-            return $roadmap;
+             $roadmap->course_count = $roadmap->courses_count;
+             $roadmap->enrollment_count = $roadmap->user_roadmaps_count;
+             $roadmap->estimated_duration = '5 Months';
+             return $roadmap;
         });
         $recentUserActivity = UserCourseHistory::query()
             ->join('detail_course', 'user_course_history.detail_course_id', '=', 'detail_course.detail_course_id')
@@ -57,6 +68,7 @@ class DashboardController extends Controller
             ->orderByDesc('watchlater.created_at')
             ->take(5)
             ->get(['course.course_id', 'course.name as course_name', 'course.desc as course_description']);
-        return view('dashboard', compact('currentUser', 'dashboardStats', 'featuredCoursesList', 'popularRoadmaps', 'recentActivityFormatted', 'watchLaterCourses'));
+
+        return view('dashboard', compact('currentUser', 'dashboardStats', 'featuredCoursesList', 'popularRoadmaps', 'recentActivityFormatted', 'watchLaterCourses', 'greeting', 'accountAge'));
     }
 }

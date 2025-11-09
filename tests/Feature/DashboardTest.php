@@ -10,6 +10,7 @@ use App\Models\DetailCourse;
 use App\Models\Roadmap;
 use App\Models\WatchLater;
 use App\Models\UserCourseProgress;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -96,5 +97,25 @@ class DashboardTest extends TestCase
         $this->assertEquals(3, $stats['completed_courses_count'], 'Completed courses count should be 3');
         $this->assertEquals(2, $stats['watch_later_count'], 'Watch later count should be 2');
         $this->assertEquals(24, $stats['total_learning_hours']);
+    }
+
+    #[Test]
+    public function dashboard_displays_dynamic_greeting_and_account_age()
+    {        
+        // Mock time to be 10 AM Jakarta time
+        Carbon::setTestNow(Carbon::parse('2025-06-01 10:00:00', 'Asia/Jakarta'));
+
+        $user = User::factory()->create([
+            'name' => 'Test User',
+            'created_at' => Carbon::parse('2025-04-01 10:00:00', 'Asia/Jakarta')
+        ]);
+
+        $response = $this->actingAs($user)->get(route('dashboard'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Good Morning, Test User!');
+        $response->assertSee('Member for 2 months');
+        
+        Carbon::setTestNow(); // Reset
     }
 }

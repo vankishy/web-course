@@ -8,7 +8,11 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <h1 class="display-4 fw-bold">Welcome back, {{ $currentUser->name }}! 👋</h1>
+                <h1 class="display-4 fw-bold">{{ $greeting }}, {{ $currentUser->name }}! 👋</h1>
+
+                <p class="text-white-50 mb-2">
+                    <i class="fas fa-calendar-alt me-2"></i>Member for {{ $accountAge }}
+                </p>
                 <p class="lead">Continue your learning journey. Pick up where you left off or explore new topics.</p>
                 <div class="mt-4">
                     <a href="{{ route('course.index') }}" class="btn btn-light btn-lg me-3">
@@ -17,6 +21,8 @@
                     <a href="{{ route('course.index') }}" class="btn btn-outline-light btn-lg">
                         <i class="fas fa-compass me-2"></i>Explore Courses
                     </a>
+                </div>
+                <div class="mt-4">
                 </div>
             </div>
             <div class="col-lg-4 text-center">
@@ -61,20 +67,18 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card stat-card border-left-warning h-100 card-hover">
-                    <a href="{{ route('watchlater.index') }}" class="text-decoration-none">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-clock text-warning fa-2x"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h4 class="mb-0 text-dark">{{ $dashboardStats['watch_later_count'] }}</h4>
-                                    <p class="text-muted mb-0">Watch Later</p>
-                                </div>
+                <div class="card stat-card border-left-warning h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-clock text-warning fa-2x"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h4 class="mb-0">{{ $dashboardStats['watch_later_count'] }}</h4>
+                                <p class="text-muted mb-0">Watch Later</p>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
             </div>
             <div class="col-md-3">
@@ -244,7 +248,7 @@
                         <a href="{{ route('roadmap.index') }}" class="btn btn-outline-success btn-sm text-start">
                             <i class="fas fa-road me-2"></i>View Roadmaps
                         </a>
-                        <a href="{{ route('watchlater.index') }}" class="btn btn-outline-warning btn-sm text-start">
+                        <a href="#watchlater" class="btn btn-outline-warning btn-sm text-start">
                             <i class="fas fa-clock me-2"></i>Watch Later
                         </a>
                         <a href="{{ route('leaderboard') }}" class="btn btn-outline-info btn-sm text-start">
