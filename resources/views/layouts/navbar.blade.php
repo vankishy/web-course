@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container">
         <!-- Brand logo links to landing page -->
-        <a class="navbar-brand" href="{{ route('landing') }}">
+        <a class="navbar-brand" href="{{ route('dashboard') }}">
             <i class="fas fa-graduation-cap me-2"></i>
             WebCourse
         </a>
