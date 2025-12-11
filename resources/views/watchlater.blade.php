@@ -10,7 +10,8 @@
                     <h1 class="display-4 fw-bold">
                         Watch Later 🕒💾
                     </h1>
-                    <p class="lead">ini deskripsi!</p>
+                    
+                    <p class="lead"> Access all the materials you saved for later and continue your learning journey.</p>
                 </div>
                 <div class="col-lg-4 text-center">
                     <i class="fas fa-clock display-1 opacity-75"></i>
@@ -23,6 +24,30 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-10 offset-md-1">
+                    {{-- Sorting Form --}}
+                <div class="d-flex justify-content-end mb-3">
+                        <form action="{{ route('watchlater.index') }}" method="GET" class="d-flex align-items-center">
+                            <label for="sort" class="form-label me-2 mb-0 fw-bold"><small>Urutkan:</small></label>
+                            <select name="sort" id="sort" class="form-select form-select-sm"
+                                style="width: 200px;" onchange="this.form.submit()">
+
+                                {{-- Opsi "Terbaru" --}}
+                                <option value="newest" {{ $currentSort == 'newest' ? 'selected' : '' }}>
+                                    Terbaru Ditambahkan
+                                </option>
+
+                                {{-- Opsi "Terlama" --}}
+                                <option value="oldest" {{ $currentSort == 'oldest' ? 'selected' : '' }}>
+                                    Terlama Ditambahkan
+                                </option>
+
+                                {{-- Opsi "Abjad" --}}
+                                <option value="alphabetical" {{ $currentSort == 'alphabetical' ? 'selected' : '' }}>
+                                    Abjad (A-Z)
+                                </option>
+                            </select>
+                        </form>
+                    </div>
                     {{-- Loop melalui item watch later --}}
                     @forelse ($watchLaterItems as $item)
                         {{-- Memastikan semua relasi data --}}

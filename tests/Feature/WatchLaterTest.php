@@ -9,7 +9,7 @@ use App\Models\DetailCourse;
 use App\Models\WatchLater;
 use App\Models\Course;
 use App\Models\SubCourse;
-use PHPUnit\Framework\Attributes\Test; // BARU: Untuk sintaks modern
+use PHPUnit\Framework\Attributes\Test;
 
 class WatchLaterTest extends TestCase
 {
@@ -29,7 +29,7 @@ class WatchLaterTest extends TestCase
         $this->detailCourse2 = DetailCourse::factory()->create(['name' => 'Test Materi 2']);
     }
 
-    #[Test] // DIPERBARUI
+    #[Test]
     public function guests_cannot_access_watch_later_routes()
     {
         $this->get(route('watchlater.index'))->assertRedirect(route('signin'));
@@ -37,7 +37,7 @@ class WatchLaterTest extends TestCase
         $this->delete(route('watchlater.destroy', 1))->assertRedirect(route('signin'));
     }
 
-    #[Test] // DIPERBARUI
+    #[Test]
     public function user_can_add_an_item_to_their_watch_later_list()
     {
         $this->actingAs($this->user)
@@ -46,23 +46,23 @@ class WatchLaterTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('watchlater', [
-            // PERBAIKAN: Menggunakan user_id
+            // Menggunakan user_id
             'user_id' => $this->user->user_id, 
             'detail_course_id' => $this->detailCourse->detail_course_id
         ]);
     }
 
-    #[Test] // DIPERBARUI
+    #[Test]
     public function user_can_see_their_own_watch_later_list()
     {
         WatchLater::factory()->create([
-            // PERBAIKAN: Menggunakan user_id
+            //  Menggunakan user_id
             'user_id' => $this->user->user_id, 
             'detail_course_id' => $this->detailCourse->detail_course_id
         ]);
         
         WatchLater::factory()->create([
-            // PERBAIKAN: Menggunakan user_id
+            // Menggunakan user_id
             'user_id' => $this->otherUser->user_id, 
             'detail_course_id' => $this->detailCourse2->detail_course_id
         ]);
@@ -74,11 +74,11 @@ class WatchLaterTest extends TestCase
         $response->assertDontSee($this->detailCourse2->name);
     }
 
-    #[Test] // DIPERBARUI
+    #[Test] 
     public function user_can_delete_their_own_item()
     {
         $item = WatchLater::factory()->create([
-            // PERBAIKAN: Menggunakan user_id
+            //  Menggunakan user_id
             'user_id' => $this->user->user_id, 
             'detail_course_id' => $this->detailCourse->detail_course_id
         ]);
@@ -91,11 +91,11 @@ class WatchLaterTest extends TestCase
         ]);
     }
 
-    #[Test] // DIPERBARUI
+    #[Test]
     public function user_cannot_delete_another_users_item()
     {
         $itemOrangLain = WatchLater::factory()->create([
-            // PERBAIKAN: Menggunakan user_id
+            // Menggunakan user_id
             'user_id' => $this->otherUser->user_id, 
             'detail_course_id' => $this->detailCourse->detail_course_id
         ]);

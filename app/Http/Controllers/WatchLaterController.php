@@ -11,23 +11,43 @@ class WatchLaterController extends Controller
     /**
      * Display the user's watch later list.
      */
-    public function index()
+   public function index(Request $request) // <-- Tambahkan 'Request $request'
     {
-        // --- HAPUS BLOK DATA DUMMY ---
-        // (Seluruh kode data dummy yang sebelumnya ada di sini telah dihapus)
-        // --- AKHIR DARI BLOK YANG DIHAPUS ---
+        // 1. Ambil parameter 'sort' dari URL, default-nya 'newest'
+        $sort = $request->input('sort', 'newest');
 
-        // Aktifkan kode database yang asli:
+        // 2. Mulai kueri
         $userId = Auth::id();
-        $watchLaterItems = WatchLater::where('user_id', $userId)
-            ->with('detailCourse.subcourse.course') // Eager loading untuk relasi
-            ->orderBy('created_at', 'desc') // Tampilkan yang terbaru di atas
-            ->get();
-        
+        $query = WatchLater::where('user_id', $userId)
+                    ->with('detailCourse.subcourse.course'); // Tetap gunakan eager loading
 
-        // Kirim data asli dari database ke view
+        // 3. Terapkan logika pengurutan
+        switch ($sort) {
+            case 'oldest':
+                // Urutkan berdasarkan data terlama
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'alphabetical':
+                // Untuk mengurutkan berdasarkan abjad, kita perlu 'join'
+                // dengan tabel 'detail_course' dan urutkan berdasarkan 'name'.
+                $query->join('detail_course', 'watchlater.detail_course_id', '=', 'detail_course.detail_course_id')
+                      ->orderBy('detail_course.name', 'asc')
+                      ->select('watchlater.*'); // Penting: Pilih kolom watchlater agar tidak bentrok
+                break;
+            case 'newest':
+            default:
+                // Urutkan berdasarkan data terbaru (default)
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        // 4. Eksekusi kueri
+        $watchLaterItems = $query->get();
+
+        // 5. Kirim data dan nilai 'sort' saat ini ke view
         return view('watchlater', [
-            'watchLaterItems' => $watchLaterItems
+            'watchLaterItems' => $watchLaterItems,
+            'currentSort' => $sort // <-- Kirim variabel ini ke view
         ]);
     }
 

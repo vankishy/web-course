@@ -20,11 +20,10 @@ class SubCourseFactory extends Factory
         return [
             // BARU: Tambahkan definisi
             'name' => fake()->sentence(3),
-            'image_path' => null, // Sesuai database Anda, ini boleh null
+            'image_path' => null, // bisa null atau diisi   
             
-            // Ini adalah bagian penting:
             // Jika 'course_id' tidak diberikan saat factory dipanggil,
-            // ia akan otomatis membuat Course baru menggunakan CourseFactory Anda.
+            // akan otomatis membuat Course baru menggunakan CourseFactory.
             'course_id' => Course::factory(),
         ];
     }
