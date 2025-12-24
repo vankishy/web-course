@@ -13,6 +13,7 @@ RUN apk add --no-cache \
     icu-dev \
     sqlite-dev \
     libjpeg-turbo-dev \
+    libzip-dev \
     autoconf \
     g++ \
     make \
