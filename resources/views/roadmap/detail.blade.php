@@ -26,6 +26,7 @@
                 <div class="alert alert-warning" role="alert">
                     Roadmap ini belum memiliki kursus yang ditambahkan.
                 </div>
+            <!-- Menambahkan daftar course yang sesuai dengan roadmap dipilih user -->
             @else
                 <ul class="list-group list-group-flush">
                     @foreach($roadmap->courses as $course)
@@ -36,6 +37,7 @@
                                     {{ $course->desc ?? 'Deskripsi kursus tidak tersedia.' }} 
                                 </small>
                             </div>
+                            <!-- Mengarahkan ke halaman course yang dipilih berdasarkan roadmap -->
                             <a href="{{ route('course.details', ['id' => $course->course_id]) }}" class="btn btn-sm btn-outline-success">
                                 Mulai <i class="fas fa-chevron-right ms-1"></i>
                             </a>
