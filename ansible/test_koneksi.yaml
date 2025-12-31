@@ -1,0 +1,10 @@
+---
+- name: Tes Koneksi Ansible Lokal
+  hosts: myserver
+  tasks:
+    - name: Ping diri sendiri
+      ping:
+
+    - name: Halo saya
+      debug:
+        msg: "Halo Reimark, Ansible sudah siap digunakan"
