@@ -1,5 +1,5 @@
 ---
-- name: Deploy Laravel Application dengan Docker Compose
+- name: Deploy Web-course Application dengan Docker Compose
   hosts: myserver
   become: yes
 
@@ -187,7 +187,7 @@
       debug:
         msg:
           - "=============================================="
-          - "Laravel Deployment Complete"
+          - "Web-Course Deployment Complete"
           - "=============================================="
           - "Project: {{ project_dir }}"
           - "URL: http://localhost:{{ app_port }}"
