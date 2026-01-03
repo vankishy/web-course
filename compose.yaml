@@ -68,6 +68,22 @@ services:
       timeout: 5s
     restart: unless-stopped
 
+# --- MONITORING STACK ---
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: laravel-prometheus
+    volumes:
+      - ./roles/prometheus/files/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    networks:
+      - sail
+    restart: unless-stopped
+
   grafana:
     image: grafana/grafana:latest
     container_name: laravel-grafana
@@ -79,7 +95,16 @@ services:
     volumes:
       - grafana-storage:/var/lib/grafana
     networks:
-      - sail  
+      - sail
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: laravel-node-exporter
+    expose:
+      - 9100
+    networks:
+      - sail
+    restart: unless-stopped
 
 networks:
   sail:
@@ -87,4 +112,9 @@ networks:
 
 volumes:
   sail-mysql:
+    driver: local
+  # Volume Monitoring
+  grafana-storage:
+    driver: local
+  prometheus_data:
     driver: local
