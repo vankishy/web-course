@@ -1,0 +1,194 @@
+---
+- name: Deploy Web-course Application dengan Docker Compose
+  hosts: myserver
+  become: yes
+
+  vars:
+    project_name: "web-course"
+    project_dir: "/opt/{{ project_name }}"
+    git_repo: "https://github.com/vankishy/web-course.git"
+    docker_image: "vankishy/web-course"
+    app_port: 8080
+
+  tasks:
+    - name: Check if Docker is installed
+      command: docker --version
+      register: docker_installed
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Install Docker if not installed
+      block:
+        - name: Update apt cache
+          apt:
+            update_cache: yes
+            cache_valid_time: 3600
+
+        - name: Install required packages
+          apt:
+            name:
+              - apt-transport-https
+              - ca-certificates
+              - curl
+              - gnupg
+              - lsb-release
+              - git
+              - python3-pip
+            state: present
+
+        - name: Install Docker
+          apt:
+            name:
+              - docker.io
+              - docker-compose
+            state: present
+
+        - name: Start and enable Docker service
+          service:
+            name: docker
+            state: started
+            enabled: yes
+
+        - name: Add current user to docker group
+          user:
+            name: "{{ ansible_user_id }}"
+            groups: docker
+            append: yes
+      when: docker_installed.rc != 0
+
+    - name: Ensure Docker daemon is running
+      service:
+        name: docker
+        state: started
+      ignore_errors: yes
+
+    - name: Wait for Docker daemon to be ready
+      command: docker ps
+      register: docker_ready
+      retries: 5
+      delay: 2
+      until: docker_ready.rc == 0
+      ignore_errors: yes
+
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Create project directory
+      file:
+        path: "{{ project_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Clone or update Git repository
+      git:
+        repo: "{{ git_repo }}"
+        dest: "{{ project_dir }}"
+        version: main
+        force: yes
+
+    - name: Fix Git safe directory issue
+      shell: |
+        git config --global --add safe.directory {{ project_dir }}
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Set proper ownership for project directory
+      file:
+        path: "{{ project_dir }}"
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        recurse: yes
+        mode: '0755'
+
+    - name: Check if .env file exists
+      stat:
+        path: "{{ project_dir }}/.env"
+      register: env_exists
+
+    - name: Create .env file from template
+      copy:
+        content: |
+          APP_NAME=Laravel
+          APP_ENV=local
+          APP_KEY=base64:fDlHpkLHrARGGYZwBixOdLrq8pJUdyaxnfYawgMxFPI=
+          APP_DEBUG=true
+          APP_URL=http://localhost
+          APP_PORT={{ app_port }}
+
+          DB_CONNECTION=mysql
+          DB_HOST=mysql
+          DB_PORT=3306
+          DB_DATABASE=web_course
+          DB_USERNAME=web_course
+          DB_PASSWORD=secret
+        dest: "{{ project_dir }}/.env"
+        mode: '0644'
+      when: not env_exists.stat.exists
+
+    - name: Pull Docker image from Docker Hub
+      shell: docker pull {{ docker_image }}:latest
+      ignore_errors: yes
+
+    - name: Stop existing containers
+      shell: |
+        cd {{ project_dir }}
+        docker compose down || docker-compose down || true
+      ignore_errors: yes
+
+    - name: Remove old containers
+      shell: docker rm -f laravel-nginx laravel-app laravel-mysql 2>/dev/null || true
+      ignore_errors: yes
+
+    - name: Start application with Docker Compose
+      shell: |
+        cd {{ project_dir }}
+        docker compose up -d
+      register: compose_up
+      retries: 2
+      delay: 5
+      until: compose_up.rc == 0
+
+    - name: Wait for containers to start
+      pause:
+        seconds: 15
+
+    - name: Wait for MySQL to be ready
+      shell: |
+        for i in {1..30}; do
+          if docker exec laravel-mysql mysqladmin ping -h localhost -psecret --silent; then
+            exit 0
+          fi
+          sleep 2
+        done
+        exit 1
+      ignore_errors: yes
+
+    - name: Run Laravel migrations
+      shell: docker exec laravel-app php artisan migrate --force
+      retries: 3
+      delay: 5
+      ignore_errors: yes
+
+    - name: Run Laravel optimize
+      shell: docker exec laravel-app php artisan optimize
+      ignore_errors: yes
+
+    - name: Check application accessibility
+      uri:
+        url: "http://localhost:{{ app_port }}"
+        status_code: [200, 301, 302, 500]
+        timeout: 10
+      register: app_check
+      ignore_errors: yes
+
+    - name: Display deployment information
+      debug:
+        msg:
+          - "=============================================="
+          - "Web-Course Deployment Complete"
+          - "=============================================="
+          - "Project: {{ project_dir }}"
+          - "URL: http://localhost:{{ app_port }}"
+          - "Composer: SKIPPED (Handled by Docker Image)"
