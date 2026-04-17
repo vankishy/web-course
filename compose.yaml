@@ -26,12 +26,12 @@ services:
       XDEBUG_MODE: "${SAIL_XDEBUG_MODE:-off}"
       XDEBUG_CONFIG: "${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}"
       IGNITION_LOCAL_SITES_PATH: "${PWD}"
-      DB_CONNECTION: mysql
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_DATABASE: "web_course"
-      DB_USERNAME: "web_course"
-      DB_PASSWORD: "secret"
+      DB_CONNECTION: "${DB_CONNECTION}"
+      DB_HOST: "${DB_HOST}"
+      DB_PORT: "${DB_PORT}"
+      DB_DATABASE: "${DB_DATABASE}"
+      DB_USERNAME: "${DB_USERNAME}"
+      DB_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - .:/var/www/html
     networks:
@@ -41,21 +41,22 @@ services:
     restart: unless-stopped
 
   mysql:
-    image: "mysql/mysql-server:8.0"
+    image: "mysql:8.0"
     container_name: laravel-mysql
+    # [TRIK WSL] Pindahkan file socket ke memori sementara agar tidak dikunci sistem
+    command: --socket=/tmp/mysql.sock
     ports:
       - "${FORWARD_DB_PORT:-3306}:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: "secret"
+      MYSQL_ROOT_PASSWORD: "kacau" 
       MYSQL_ROOT_HOST: "%"
-      MYSQL_DATABASE: "web_course"
-      MYSQL_USER: "web_course"
-      MYSQL_PASSWORD: "secret"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
-      MYSQL_EXTRA_OPTIONS: "${MYSQL_EXTRA_OPTIONS}"
     volumes:
-      - "sail-mysql:/var/lib/mysql"
-      - "./vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh"
+      # [TRIK WSL] Gunakan nama volume yang 100% BARU (sail-mysql-fresh)
+      - "sail-mysql-fresh:/var/lib/mysql"
     networks:
       - sail
     healthcheck:
@@ -63,7 +64,8 @@ services:
         - CMD
         - mysqladmin
         - ping
-        - "-psecret"
+        - "-uroot" # Penambahan user root untuk healthcheck
+        - "-pkacau"
       retries: 3
       timeout: 5s
     restart: unless-stopped
@@ -73,5 +75,5 @@ networks:
     driver: bridge
 
 volumes:
-  sail-mysql:
+  sail-mysql-fresh:
     driver: local
