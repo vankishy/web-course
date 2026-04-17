@@ -1,46 +1,38 @@
-FROM php:8.3-fpm-alpine
+# Pakai Apache agar tidak perlu Nginx terpisah
+FROM php:8.3-apache
 
-ARG WWWUSER=1000
-ARG WWWGROUP=1000
+# Install dependencies (Debian style)
+RUN apt-get update && apt-get install -y \
+    git curl libpng-dev libxml2-dev zip unzip libzip-dev \
+    && docker-php-ext-install pdo_mysql bcmath gd zip
 
-RUN apk add --no-cache \
-    git \
-    curl \
-    libpng-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    icu-dev \
-    sqlite-dev \
-    libjpeg-turbo-dev \
-    libzip-dev \
-    autoconf \
-    g++ \
-    make \
-    linux-headers
-
-RUN docker-php-ext-configure gd --with-jpeg \
-    && docker-php-ext-install -j$(nproc) pdo_mysql bcmath gd exif intl opcache pcntl zip
+# Set Document Root ke folder public Laravel
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/conf-available/*.conf
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-RUN set -eux; \
-    addgroup -g ${WWWGROUP} sail; \
-    adduser -u ${WWWUSER} -G sail -D -h /home/sail sail
-
-COPY composer.json composer.lock ./
-
-RUN composer install --no-scripts --no-autoloader --no-dev
-
+# Copy kodingan
 COPY . .
 
-RUN composer dump-autoload --optimize && \
-    chown -R sail:sail /var/www/html
+# Install dependencies & set permission
+RUN composer install --no-dev --optimize-autoloader \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-USER sail
+# Azure butuh port 80
+EXPOSE 80
 
-EXPOSE 9000
+# Pasang tool untuk konversi format file
+RUN apt-get update && apt-get install -y dos2unix
 
-CMD ["php-fpm"]
+# Bersihkan file artisan dan folder-folder penting dari karakter Windows
+RUN find . -type f -exec dos2unix {} +
+
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Jalankan Apache di foreground
+CMD ["apache2-foreground"]
